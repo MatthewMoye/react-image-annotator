@@ -4,10 +4,3 @@
   height: 100vh;
   overflow: hidden;
 }
-
-.imgContainer {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
