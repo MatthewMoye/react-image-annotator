@@ -5,6 +5,11 @@ const Image = (props) => {
     <img
       id={props.id}
       ref={props.imgRef}
+      style={{ 
+        width: "100%",
+        height: "100%",
+        objectFit: "contain"
+       }}
       src={props.src}
       alt={"cool stuff"}
       onLoad={props.onImgLoad}

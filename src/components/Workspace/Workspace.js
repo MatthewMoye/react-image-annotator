@@ -1,33 +1,35 @@
-import { useState } from "react";
+import useWindowSize from "../../hooks/useWindowSize";
 import Image from "../Layer/Image";
 import styles from "./Workspace.module.css";
 
 const Workspace = (props) => {
-  const [imgData, setimgData] = useState([]);
-
+  const windowSize = useWindowSize();
   const onImgLoad = (e) => {
-    setimgData([
-      ...imgData,
-      {
-        id: e.target.key,
-        w: e.target.naturalWidth,
-        h: e.target.naturalHeight,
-      },
-    ]);
+    props.dispatch({
+      type: "IMAGE_LOAD",
+      id: e.target.id,
+      w: e.target.naturalWidth,
+      h: e.target.naturalHeight,
+    });
   };
-  console.log(props.state.images);
+
   return (
     <div
       className={styles.imgContainer}
       style={{
-        display: imgData.length > 0 ? "flex" : "none",
-        width: "1000px",
-        height: "1000px",
+        width: windowSize.width,
+        height: windowSize.height,
       }}
       ref={props.imageContainerRef}
     >
       {props.state.images.map((img) => (
-        <Image key={img.id} src={img.src} onImgLoad={onImgLoad} />
+        <Image
+          key={img.id}
+          id={img.id}
+          src={img.src}
+          imgSetLength={props.state.images.length}
+          onImgLoad={onImgLoad}
+        />
       ))}
     </div>
   );
