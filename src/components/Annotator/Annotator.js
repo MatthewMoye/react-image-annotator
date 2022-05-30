@@ -1,38 +1,43 @@
-import { useReducer, useRef, useState } from "react";
+import { useReducer, useRef } from "react";
 import Toolbar from "../Toolbar/Toolbar";
 import Workspace from "../Workspace/Workspace";
-import { reducer } from "./reducer";
+import reducer from "./reducer";
+import useEvents from "./user-events";
 import styles from "./Annotator.module.css";
-import userEvents from "./user-events";
+
+const tempImg =
+  "https://c2.peakpx.com/wallpaper/98/334/470/4k-aerial-view-city-cityscape-drone-wallpaper-preview.jpg";
 
 const Annotator = () => {
   const [state, dispatch] = useReducer(reducer, {
-    images: [],
+    images: [
+      { id: 1, src: tempImg },
+      { id: 2, src: tempImg },
+    ],
+    activeTool: "moveImage",
   });
 
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [mousePosPan, setMousePosPan] = useState({ x: 0, y: 0 });
+  const activeImageRef = useRef();
+  const imageContainerRef = useRef();
 
-  const activeRef = { current: null };
-  const panRef = useRef();
-
-  const events = userEvents(dispatch)
-
-
-  const startPanning = (e) => {
-    const xRelPos = e.pageX - activeRef.current?.offsetLeft;
-    const yRelPos = e.pageY - activeRef.current?.offsetTop;
-    if (e.button === 1) setMousePos({ x: xRelPos, y: yRelPos });
-    if (e.button === 3) setMousePosPan({ x: xRelPos, y: yRelPos });
-  };
+  const [mousePosition, events] = useEvents(
+    dispatch,
+    activeImageRef,
+    imageContainerRef,
+    state.activeTool
+  );
 
   return (
     <>
-      <div
-        className={styles.annotatorContainer}
-      >
-        <Workspace mousePos={mousePos} panRef={panRef} events={events} />
-        {mousePos.x}
+      <div className={styles.annotatorContainer} {...events}>
+        <Workspace
+          state={state}
+          dispatch={dispatch}
+          activeImageRef={activeImageRef}
+          imageContainerRef={imageContainerRef}
+          mousePosition={mousePosition}
+          events={events}
+        />
       </div>
       <Toolbar />
     </>

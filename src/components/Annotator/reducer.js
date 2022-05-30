@@ -1,9 +1,10 @@
-export const reducer = (state, action) => {
-  if (action.event === "mouseDown") console.log(action);
+const reducer = (state, action) => {
   switch (action.type) {
-    case "pan":
+    case "ADD_IMAGE":
       return state;
     default:
       return state;
   }
 };
+
+export default reducer;
