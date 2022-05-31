@@ -1,5 +1,4 @@
 import useWindowSize from "../../hooks/useWindowSize";
-import Image from "../Layer/Image";
 import styles from "./Workspace.module.css";
 
 const Workspace = (props) => {
@@ -23,12 +22,20 @@ const Workspace = (props) => {
       ref={props.imageContainerRef}
     >
       {props.state.images.map((img) => (
-        <Image
+        <img
           key={img.id}
           id={img.id}
+          ref={props.imgRef}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+          }}
           src={img.src}
-          imgSetLength={props.state.images.length}
-          onImgLoad={onImgLoad}
+          alt={"cool stuff"}
+          onLoad={onImgLoad}
+          onContextMenu={(e) => e.preventDefault()}
+          className={styles.image}
         />
       ))}
     </div>
