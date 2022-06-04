@@ -20,7 +20,7 @@ const reducer = (state, action) => {
       };
     }
     case "SET_ACTIVE_IMAGE": {
-      return { ...state, activeTool: "select", activeImageId: action.id };
+      return { ...state, activeTool: "select", activeImageIdx: action.idx };
     }
     default: {
       return state;

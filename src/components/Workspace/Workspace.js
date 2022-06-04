@@ -2,7 +2,7 @@ import useWindowSize from "../../hooks/useWindowSize";
 import styles from "./Workspace.module.css";
 
 const Workspace = ({
-  activeImageId,
+  activeImageIdx,
   activeImageRef,
   activeTool,
   dispatch,
@@ -20,30 +20,32 @@ const Workspace = ({
     });
   };
 
-  const onSelectImg = (e, id) => {
+  const handleSelectImg = (e, idx) => {
     if (activeTool === "selectImage" && e.button === 0) {
-      dispatch({ type: "SET_ACTIVE_IMAGE", id: id });
+      dispatch({ type: "SET_ACTIVE_IMAGE", idx: idx });
     }
   };
 
   return (
     <div className={styles.imgList} style={windowSize} ref={imageContainerRef}>
-      {images.map((img) => {
+      {images.map((img, imgIdx) => {
         const annotationExtraSize = {
           width: img.width * 0.2,
           height: img.height * 0.2,
         };
+        const isActiveImg = activeImageIdx === imgIdx;
         return (
           <div
             key={`img-container${img.id}`}
-            onMouseDown={(e) => onSelectImg(e, img.id)}
+            onMouseDown={(e) => handleSelectImg(e, imgIdx)}
             className={styles.imgContainer}
             style={{
-              margin: `${annotationExtraSize.height /2}px ${
+              zIndex: isActiveImg ? 2 : 1,
+              margin: `${annotationExtraSize.height / 2}px ${
                 annotationExtraSize.width / 2
               }px`,
             }}
-            ref={activeImageId === img.id ? activeImageRef : null}
+            ref={isActiveImg ? activeImageRef : null}
           >
             <img
               key={`img-${img.id}`}
@@ -51,12 +53,14 @@ const Workspace = ({
               src={img.src}
               alt={img.alt}
               onLoad={onImgLoad}
+              style={{ zIndex: isActiveImg ? 2 : 1 }}
               className={styles.image}
             />
             <svg
               key={`annotation-list-${img.id}`}
               className={styles.annotationList}
               style={{
+                zIndex: isActiveImg ? 2 : 1,
                 width: `${img.width + annotationExtraSize.width}px`,
                 height: `${img.height + annotationExtraSize.height}px`,
               }}

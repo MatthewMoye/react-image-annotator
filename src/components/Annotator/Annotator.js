@@ -16,8 +16,8 @@ const Annotator = () => {
       { id: "1", alt: "city-overview", src: tempImg1 },
       { id: "2", alt: "city-highway", src: tempImg2 },
     ],
-    activeTool: "selectImage",
-    activeImageId: null,
+    activeTool: "select",
+    activeImageIdx: 0,
   });
 
   const activeImageRef = useRef();
@@ -34,7 +34,7 @@ const Annotator = () => {
     <>
       <div className={styles.annotatorContainer} {...events}>
         <Workspace
-          activeImageId={state.activeImageId}
+          activeImageIdx={state.activeImageIdx}
           activeImageRef={activeImageRef}
           activeTool={state.activeTool}
           dispatch={dispatch}
