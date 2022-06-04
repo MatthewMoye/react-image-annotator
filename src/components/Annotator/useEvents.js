@@ -26,7 +26,6 @@ const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
         x: e.pageX - activeImageRef.current?.offsetLeft,
         y: e.pageY - activeImageRef.current?.offsetTop,
       };
-      console.log(mousePos.current);
       if (type) {
         dispatch({
           type: type,

@@ -1,11 +1,18 @@
 import useWindowSize from "../../hooks/useWindowSize";
 import styles from "./Workspace.module.css";
 
-const Workspace = (props) => {
+const Workspace = ({
+  activeImageId,
+  activeImageRef,
+  activeTool,
+  dispatch,
+  imageContainerRef,
+  images,
+}) => {
   const windowSize = useWindowSize();
 
   const onImgLoad = (e) => {
-    props.dispatch({
+    dispatch({
       type: "LOAD_IMAGE",
       id: e.target.id,
       w: e.target.naturalWidth,
@@ -14,34 +21,29 @@ const Workspace = (props) => {
   };
 
   const onSelectImg = (e, id) => {
-    if (props.state.activeTool === "selectImage" && e.button === 0) {
-      console.log(e.offsetTop);
-      props.dispatch({ type: "SET_ACTIVE_IMAGE", id: id });
+    if (activeTool === "selectImage" && e.button === 0) {
+      dispatch({ type: "SET_ACTIVE_IMAGE", id: id });
     }
   };
 
   return (
-    <div
-      className={styles.imgList}
-      style={windowSize}
-      ref={props.imageContainerRef}
-    >
-      {props.state.images.map((img) => {
-        const imgSize = {
-          width: `${img.width}px`,
-          height: `${img.height}px`,
+    <div className={styles.imgList} style={windowSize} ref={imageContainerRef}>
+      {images.map((img) => {
+        const annotationExtraSize = {
+          width: img.width * 0.2,
+          height: img.height * 0.2,
         };
         return (
           <div
             key={`img-container${img.id}`}
             onMouseDown={(e) => onSelectImg(e, img.id)}
             className={styles.imgContainer}
-            style={imgSize}
-            ref={
-              props.state.activeImageId === img.id
-                ? props.activeImageRef
-                : null
-            }
+            style={{
+              margin: `${annotationExtraSize.height /2}px ${
+                annotationExtraSize.width / 2
+              }px`,
+            }}
+            ref={activeImageId === img.id ? activeImageRef : null}
           >
             <img
               key={`img-${img.id}`}
@@ -54,7 +56,10 @@ const Workspace = (props) => {
             <svg
               key={`annotation-list-${img.id}`}
               className={styles.annotationList}
-              style={imgSize}
+              style={{
+                width: `${img.width + annotationExtraSize.width}px`,
+                height: `${img.height + annotationExtraSize.height}px`,
+              }}
             ></svg>
           </div>
         );

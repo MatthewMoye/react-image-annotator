@@ -34,12 +34,14 @@ const Annotator = () => {
     <>
       <div className={styles.annotatorContainer} {...events}>
         <Workspace
-          state={state}
-          dispatch={dispatch}
+          activeImageId={state.activeImageId}
           activeImageRef={activeImageRef}
-          imageContainerRef={imageContainerRef}
-          mousePosition={mousePosition}
+          activeTool={state.activeTool}
+          dispatch={dispatch}
           events={events}
+          imageContainerRef={imageContainerRef}
+          images={state.images}
+          mousePosition={mousePosition}
         />
       </div>
       <Toolbar dispatch={dispatch} activeTool={state.activeTool} />

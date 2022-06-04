@@ -7,10 +7,12 @@
 
 .imgContainer {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .image {
-  position: absolute;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
