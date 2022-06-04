@@ -13,12 +13,14 @@ const reducer = (state, action) => {
       return {
         ...state,
         images: state.images.map((img) =>
-          img.id !== action.id ? img : { ...img, width: action.w, height: action.h }
+          img.id !== action.id
+            ? img
+            : { ...img, width: action.w, height: action.h }
         ),
       };
     }
     case "SET_ACTIVE_IMAGE": {
-      return { ...state, activeTool: "select", activeImage: action.id };
+      return { ...state, activeTool: "select", activeImageId: action.id };
     }
     default: {
       return state;

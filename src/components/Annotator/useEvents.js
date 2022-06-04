@@ -26,13 +26,15 @@ const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
         x: e.pageX - activeImageRef.current?.offsetLeft,
         y: e.pageY - activeImageRef.current?.offsetTop,
       };
-
-      dispatch({
-        type: type,
-        event: "mouseMove",
-        x: mousePos.current.x,
-        y: mousePos.current.y,
-      });
+      console.log(mousePos.current);
+      if (type) {
+        dispatch({
+          type: type,
+          event: "mouseMove",
+          x: mousePos.current.x,
+          y: mousePos.current.y,
+        });
+      }
     },
     onMouseDown: (e, type) => {
       if (e.button === 2 || activeTool === "pan") {
@@ -42,28 +44,29 @@ const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
           y: e.pageY - imageContainerRef.current.offsetTop,
         };
       }
-
-      dispatch({
-        type: type,
-        event: "mouseDown",
-        x: mousePos.current.x,
-        y: mousePos.current.y,
-      });
+      if (type) {
+        dispatch({
+          type: type,
+          event: "mouseDown",
+          x: mousePos.current.x,
+          y: mousePos.current.y,
+        });
+      }
     },
     onMouseUp: (e, type) => {
       pan = false;
-
-      dispatch({
-        type: type,
-        event: "mouseUp",
-        x: mousePos.current.x,
-        y: mousePos.current.y,
-      });
+      if (type) {
+        dispatch({
+          type: type,
+          event: "mouseUp",
+          x: mousePos.current.x,
+          y: mousePos.current.y,
+        });
+      }
     },
     onWheel: (e) => {
       const direction = e.deltaY < 0 ? 1 : e.deltaY > 0 ? -1 : 0;
       console.log(direction);
-
       dispatch({
         event: "wheel",
         x: e.pageX,

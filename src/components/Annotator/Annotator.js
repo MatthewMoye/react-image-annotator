@@ -13,11 +13,11 @@ const tempImg2 =
 const Annotator = () => {
   const [state, dispatch] = useReducer(reducer, {
     images: [
-      { id: "1", src: tempImg1 },
-      { id: "2", src: tempImg2 },
+      { id: "1", alt: "city-overview", src: tempImg1 },
+      { id: "2", alt: "city-highway", src: tempImg2 },
     ],
     activeTool: "selectImage",
-    activeImage: null,
+    activeImageId: null,
   });
 
   const activeImageRef = useRef();

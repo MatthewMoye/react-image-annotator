@@ -1,15 +1,23 @@
-.imgContainer {
+.imgList {
   position: absolute;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
+}
+
+.imgContainer {
+  position: relative;
 }
 
 .image {
-  padding: 30px;
+  position: absolute;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
   pointer-events: none;
+}
+
+.annotationList {
+  position: absolute;
 }
