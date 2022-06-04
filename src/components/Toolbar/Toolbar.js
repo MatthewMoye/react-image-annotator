@@ -1,5 +1,7 @@
 import {
+  BurstMode,
   CropSquare,
+  Image,
   LocationSearching,
   PanTool,
   PanToolAlt,
@@ -12,13 +14,21 @@ const Toolbar = (props) => {
     pan: (obj) => <PanTool {...obj} sx={{ fontSize: "36px" }} />,
     point: (obj) => <LocationSearching {...obj} sx={{ fontSize: "36px" }} />,
     box: (obj) => <CropSquare {...obj} sx={{ fontSize: "48px" }} />,
+    selectImage: (obj) => <Image {...obj} sx={{ fontSize: "48px" }} />,
+    moveImage: (obj) => <BurstMode {...obj} sx={{ fontSize: "48px" }} />,
   };
-  const toolList = ["select", "pan", "point", "box"];
+  const toolList = [
+    "select",
+    "pan",
+    "point",
+    "box",
+    "selectImage",
+    "moveImage",
+  ];
 
   const isActiveTool = (toolName) =>
     `toolIcon${props.activeTool === toolName ? "Active" : ""}`;
-  const updateTool = (tool) =>
-    props.dispatch({ type: "UPDATE_TOOL", tool: tool });
+  const updateTool = (tool) => props.dispatch({ type: "SET_TOOL", tool: tool });
 
   return (
     <div className={styles.container} onContextMenu={(e) => e.preventDefault()}>

@@ -1,16 +1,24 @@
 const reducer = (state, action) => {
   switch (action.type) {
-    case "UPDATE_TOOL": {
+    case "SET_TOOL": {
       return { ...state, activeTool: action.tool };
     }
-    case "BOUNDING_BOX": {
+    case "BOX": {
       return state;
     }
     case "POINT": {
       return state;
     }
-    case "IMAGE_LOAD": {
-      return state;
+    case "LOAD_IMAGE": {
+      return {
+        ...state,
+        images: state.images.map((img) =>
+          img.id !== action.id ? img : { ...img, width: action.w, height: action.h }
+        ),
+      };
+    }
+    case "SET_ACTIVE_IMAGE": {
+      return { ...state, activeTool: "select", activeImage: action.id };
     }
     default: {
       return state;

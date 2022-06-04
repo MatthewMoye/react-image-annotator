@@ -3,13 +3,20 @@ import styles from "./Workspace.module.css";
 
 const Workspace = (props) => {
   const windowSize = useWindowSize();
+  
   const onImgLoad = (e) => {
     props.dispatch({
-      type: "IMAGE_LOAD",
+      type: "LOAD_IMAGE",
       id: e.target.id,
       w: e.target.naturalWidth,
       h: e.target.naturalHeight,
     });
+  };
+
+  const onSelectImg = (e) => {
+    if (props.state.activeTool === "selectImage") {
+      props.dispatch({ type: "SET_ACTIVE_IMAGE", id: e.target.id });
+    }
   };
 
   return (
