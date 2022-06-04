@@ -6,6 +6,7 @@ const Workspace = ({
   activeImageRef,
   activeTool,
   dispatch,
+  events,
   imageContainerRef,
   images,
 }) => {
@@ -20,31 +21,24 @@ const Workspace = ({
     });
   };
 
-  const handleSelectImg = (e, idx) => {
+  const handleImgMouseDown = (e, idx) => {
     if (activeTool === "selectImage" && e.button === 0) {
       dispatch({ type: "SET_ACTIVE_IMAGE", idx: idx });
+    } else if (activeTool === "moveImage" && e.button === 0) {
+      events.onMouseDown(e, null, true);
     }
   };
 
   return (
     <div className={styles.imgList} style={windowSize} ref={imageContainerRef}>
       {images.map((img, imgIdx) => {
-        const annotationExtraSize = {
-          width: img.width * 0.2,
-          height: img.height * 0.2,
-        };
         const isActiveImg = activeImageIdx === imgIdx;
         return (
           <div
             key={`img-container${img.id}`}
-            onMouseDown={(e) => handleSelectImg(e, imgIdx)}
+            onMouseDown={(e) => handleImgMouseDown(e, imgIdx)}
             className={styles.imgContainer}
-            style={{
-              zIndex: isActiveImg ? 2 : 1,
-              margin: `${annotationExtraSize.height / 2}px ${
-                annotationExtraSize.width / 2
-              }px`,
-            }}
+            style={{ zIndex: isActiveImg ? 1 : 0 }}
             ref={isActiveImg ? activeImageRef : null}
           >
             <img
@@ -53,16 +47,16 @@ const Workspace = ({
               src={img.src}
               alt={img.alt}
               onLoad={onImgLoad}
-              style={{ zIndex: isActiveImg ? 2 : 1 }}
+              style={{ zIndex: isActiveImg ? 1 : 0 }}
               className={styles.image}
             />
             <svg
               key={`annotation-list-${img.id}`}
               className={styles.annotationList}
               style={{
-                zIndex: isActiveImg ? 2 : 1,
-                width: `${img.width + annotationExtraSize.width}px`,
-                height: `${img.height + annotationExtraSize.height}px`,
+                zIndex: isActiveImg ? 1 : 0,
+                width: `${img.width}px`,
+                height: `${img.height}px`,
               }}
             ></svg>
           </div>

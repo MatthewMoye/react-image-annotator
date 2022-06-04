@@ -3,6 +3,7 @@ import { useRef } from "react";
 const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
   const mousePosRef = useRef({ x: 0, y: 0 });
   const prevMousePosRef = useRef({ x: 0, y: 0 });
+  const panStartRef = useRef({ x: 0, y: 0 });
 
   const getMousePosition = (e, ref) => {
     return {
@@ -11,13 +12,13 @@ const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
     };
   };
 
-  const updateRefPosition = (ref, mousePos) => {
+  const updateRefPosition = (ref, mousePos, prevMousePos) => {
     if (ref.current?.style) {
       ref.current.style.top = `${
-        ref.current.offsetTop - (prevMousePosRef.current.y - mousePos.y)
+        ref.current.offsetTop - (prevMousePos.current.y - mousePos.y)
       }px`;
       ref.current.style.left = `${
-        ref.current.offsetLeft - (prevMousePosRef.current.x - mousePos.x)
+        ref.current.offsetLeft - (prevMousePos.current.x - mousePos.x)
       }px`;
     }
   };
@@ -30,10 +31,11 @@ const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
       if (pan) {
         updateRefPosition(
           imageContainerRef,
-          getMousePosition(e, imageContainerRef)
+          getMousePosition(e, imageContainerRef),
+          panStartRef
         );
       } else if (moveImage) {
-        updateRefPosition(activeImageRef, mousePosRef.current);
+        updateRefPosition(activeImageRef, mousePosRef.current, prevMousePosRef);
       }
       if (type) {
         dispatch({
@@ -44,11 +46,11 @@ const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
         });
       }
     },
-    onMouseDown: (e, type) => {
+    onMouseDown: (e, type, startMoveImage) => {
       if (e.button === 2 || activeTool === "pan") {
         pan = true;
-        prevMousePosRef.current = getMousePosition(e, imageContainerRef);
-      } else if (activeTool === "moveImage") {
+        panStartRef.current = getMousePosition(e, imageContainerRef);
+      } else if (startMoveImage) {
         moveImage = true;
         prevMousePosRef.current = getMousePosition(e, activeImageRef);
       }
@@ -62,8 +64,11 @@ const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
       }
     },
     onMouseUp: (e, type) => {
-      moveImage = false;
-      pan = false;
+      if (e.button === 0) {
+        moveImage = false;
+      } else if (e.button === 2) {
+        pan = false;
+      }
       if (type) {
         dispatch({
           type: type,
@@ -72,6 +77,10 @@ const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
           y: mousePosRef.current.y,
         });
       }
+    },
+    onMouseLeave: () => {
+      moveImage = false;
+      pan = false;
     },
     onWheel: (e) => {
       const direction = e.deltaY < 0 ? 1 : e.deltaY > 0 ? -1 : 0;

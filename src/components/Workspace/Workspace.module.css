@@ -1,12 +1,9 @@
 .imgList {
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
 }
 
 .imgContainer {
-  position: relative;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
