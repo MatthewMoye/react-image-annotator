@@ -1,8 +1,8 @@
 import { useReducer, useRef } from "react";
 import Toolbar from "../Toolbar/Toolbar";
 import Workspace from "../Workspace/Workspace";
-import reducer from "./reducer";
-import useEvents from "./use-events";
+import reducer from "./reducer/reducer";
+import useEvents from "./useEvents";
 import styles from "./Annotator.module.css";
 
 const tempImg1 =
@@ -41,7 +41,7 @@ const Annotator = () => {
           events={events}
         />
       </div>
-      <Toolbar />
+      <Toolbar dispatch={dispatch} activeTool={state.activeTool} />
     </>
   );
 };
