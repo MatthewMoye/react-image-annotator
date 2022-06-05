@@ -2,8 +2,8 @@ import { useRef } from "react";
 
 const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
   const mousePosRef = useRef({ x: 0, y: 0 });
-  const prevMousePosRef = useRef({ x: 0, y: 0 });
   const panStartRef = useRef({ x: 0, y: 0 });
+  const prevMousePosRef = useRef({ x: 0, y: 0 });
 
   const getMousePosition = (e, ref) => {
     return {
@@ -84,11 +84,10 @@ const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
     },
     onWheel: (e) => {
       const direction = e.deltaY < 0 ? 1 : e.deltaY > 0 ? -1 : 0;
-      console.log(direction);
       dispatch({
-        event: "wheel",
-        x: e.pageX,
-        y: e.pageY,
+        type: "ZOOM",
+        event: "onWheel",
+        direction: direction,
       });
     },
     onContextMenu: (e) => {

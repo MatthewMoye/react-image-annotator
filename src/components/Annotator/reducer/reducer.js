@@ -3,6 +3,11 @@ const reducer = (state, action) => {
     case "SET_TOOL": {
       return { ...state, activeTool: action.tool };
     }
+    case "ZOOM": {
+      const zoomPercent =
+        action.direction * (state.zoomLvl < 1.5 ? 0.05 : 0.05 * state.zoomLvl);
+      return { ...state, zoomLvl: state.zoomLvl + zoomPercent };
+    }
     case "BOX": {
       return state;
     }

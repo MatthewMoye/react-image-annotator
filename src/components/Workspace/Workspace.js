@@ -9,6 +9,8 @@ const Workspace = ({
   events,
   imageContainerRef,
   images,
+  mousePositionRef,
+  zoomLvl,
 }) => {
   const windowSize = useWindowSize();
 
@@ -24,13 +26,24 @@ const Workspace = ({
   const handleImgMouseDown = (e, idx) => {
     if (activeTool === "selectImage" && e.button === 0) {
       dispatch({ type: "SET_ACTIVE_IMAGE", idx: idx });
-    } else if (activeTool === "moveImage" && e.button === 0) {
+    } else if (
+      activeTool === "moveImage" &&
+      e.button === 0 &&
+      activeImageIdx === idx
+    ) {
       events.onMouseDown(e, null, true);
     }
   };
 
   return (
-    <div className={styles.imgList} style={windowSize} ref={imageContainerRef}>
+    <div
+      className={styles.imgList}
+      style={{
+        ...windowSize,
+        transform: `scale(${Math.max(Math.min(zoomLvl, 20), 0.5)})`,
+      }}
+      ref={imageContainerRef}
+    >
       {images.map((img, imgIdx) => {
         const isActiveImg = activeImageIdx === imgIdx;
         const imgMargin = { width: 0.1 * img.width, height: 0.1 * img.height };
@@ -48,7 +61,7 @@ const Workspace = ({
               key={`img-box-${img.id}`}
               onMouseDown={(e) => handleImgMouseDown(e, imgIdx)}
               className={styles.imgBox}
-              style={{ zIndex: isActiveImg ? 1 : 0, top: 0, left: 0 }}
+              style={{ zIndex: isActiveImg ? 1 : 0 }}
               ref={isActiveImg ? activeImageRef : null}
             >
               <img
