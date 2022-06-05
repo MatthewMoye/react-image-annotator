@@ -1,8 +1,15 @@
 .imgList {
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.imgContainer {
+.container {
+  position: relative;
+}
+
+.imgBox {
   position: absolute;
   display: flex;
   justify-content: center;
