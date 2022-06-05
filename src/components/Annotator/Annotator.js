@@ -3,7 +3,6 @@ import Toolbar from "../Toolbar/Toolbar";
 import Workspace from "../Workspace/Workspace";
 import reducer from "./reducer/reducer";
 import useEvents from "./useEvents";
-import styles from "./Annotator.module.css";
 import { imagesData } from "./imagesData";
 
 const Annotator = (props) => {
@@ -26,19 +25,17 @@ const Annotator = (props) => {
 
   return (
     <>
-      <div className={styles.annotatorContainer} {...events}>
-        <Workspace
-          activeImageIdx={state.activeImageIdx}
-          activeImageRef={activeImageRef}
-          activeTool={state.activeTool}
-          dispatch={dispatch}
-          events={events}
-          imageContainerRef={imageContainerRef}
-          images={state.images}
-          mousePositionRef={mousePositionRef}
-          zoomLvl={state.zoomLvl}
-        />
-      </div>
+      <Workspace
+        activeImageIdx={state.activeImageIdx}
+        activeImageRef={activeImageRef}
+        activeTool={state.activeTool}
+        dispatch={dispatch}
+        events={events}
+        imageContainerRef={imageContainerRef}
+        images={state.images}
+        mousePositionRef={mousePositionRef}
+        zoomLvl={state.zoomLvl}
+      />
       <Toolbar dispatch={dispatch} activeTool={state.activeTool} />
     </>
   );

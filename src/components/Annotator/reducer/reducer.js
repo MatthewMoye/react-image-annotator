@@ -6,7 +6,10 @@ const reducer = (state, action) => {
     case "ZOOM": {
       const zoomPercent =
         action.direction * (state.zoomLvl < 2 ? 0.1 : 0.1 * state.zoomLvl);
-      return { ...state, zoomLvl: state.zoomLvl + zoomPercent };
+      return {
+        ...state,
+        zoomLvl: Math.max(Math.min(state.zoomLvl + zoomPercent, 20), 0.5),
+      };
     }
     case "BOX": {
       return state;
