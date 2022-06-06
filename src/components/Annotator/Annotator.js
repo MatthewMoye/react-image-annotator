@@ -3,13 +3,12 @@ import Toolbar from "../Toolbar/Toolbar";
 import Workspace from "../Workspace/Workspace";
 import reducer from "./reducer/reducer";
 import useEvents from "./useEvents";
-import { imagesData } from "./imagesData";
 
-const Annotator = (props) => {
+const Annotator = ({ images }) => {
   const [state, dispatch] = useReducer(reducer, {
     activeImageIdx: 0,
     activeTool: "select",
-    images: imagesData,
+    images: images,
     zoomLvl: 1,
   });
 
