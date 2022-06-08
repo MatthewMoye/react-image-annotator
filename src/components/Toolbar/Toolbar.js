@@ -5,6 +5,7 @@ import {
   LocationSearching,
   PanTool,
   PanToolAlt,
+  Rotate90DegreesCw,
 } from "@mui/icons-material";
 import styles from "./Toolbar.module.css";
 
@@ -16,6 +17,7 @@ const Toolbar = (props) => {
     box: (obj) => <CropSquare {...obj} sx={{ fontSize: "48px" }} />,
     selectImage: (obj) => <Image {...obj} sx={{ fontSize: "48px" }} />,
     moveImage: (obj) => <BurstMode {...obj} sx={{ fontSize: "48px" }} />,
+    rotate: (obj) => <Rotate90DegreesCw {...obj} sx={{ fontSize: "48px" }} />,
   };
   const toolList = [
     "select",
@@ -24,6 +26,7 @@ const Toolbar = (props) => {
     "box",
     "selectImage",
     "moveImage",
+    "rotate",
   ];
 
   const isActiveTool = (toolName) =>

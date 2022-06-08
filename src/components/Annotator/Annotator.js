@@ -18,8 +18,9 @@ const Annotator = ({ images }) => {
   const [mousePositionRef, events] = useEvents(
     dispatch,
     activeImageRef,
+    state.activeTool,
     imageContainerRef,
-    state.activeTool
+    state.zoomLvl
   );
 
   return (
@@ -33,6 +34,7 @@ const Annotator = ({ images }) => {
         imageContainerRef={imageContainerRef}
         images={state.images}
         mousePositionRef={mousePositionRef}
+        workspaceAngle={state.workspaceAngle}
         zoomLvl={state.zoomLvl}
       />
       <Toolbar dispatch={dispatch} activeTool={state.activeTool} />

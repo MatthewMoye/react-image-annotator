@@ -24,13 +24,12 @@ const Workspace = ({
   };
 
   const handleImgMouseDown = (e, idx) => {
-    if (activeTool === "selectImage" && e.button === 0) {
+    if (e.button !== 0) return;
+    if (activeTool === "selectImage") {
       dispatch({ type: "SET_ACTIVE_IMAGE", idx: idx });
-    } else if (
-      activeTool === "moveImage" &&
-      e.button === 0 &&
-      activeImageIdx === idx
-    ) {
+    } else if (activeTool === "rotate" && activeImageIdx === idx) {
+      dispatch({ type: "ROTATE"});
+    } else if (activeTool === "moveImage" && activeImageIdx === idx) {
       events.onMouseDown(e, null, true);
     }
   };
@@ -54,8 +53,8 @@ const Workspace = ({
                 key={`img-container-${img.id}`}
                 className={styles.imageContainer}
                 style={{
-                  minWidth: `${img.width}px`,
-                  minHeight: `${img.height}px`,
+                  minWidth: `${Math.max(img.width, img.height)}px`,
+                  minHeight: `${Math.max(img.width, img.height)}px`,
                   margin: `${imgMargin.height}px ${imgMargin.width}px`,
                 }}
               >
@@ -79,6 +78,7 @@ const Workspace = ({
                       border: `solid 3px ${
                         isActiveImg ? "#00ea9c" : "transparent"
                       }`,
+                      transform: `rotate(${img.angle}deg)`,
                     }}
                     className={styles.image}
                   />
@@ -89,6 +89,7 @@ const Workspace = ({
                       zIndex: isActiveImg ? 1 : 0,
                       width: `${img.width + imgMargin.width * 2}px`,
                       height: `${img.height + imgMargin.height * 2}px`,
+                      transform: `rotate(${img.angle}deg)`,
                     }}
                   ></svg>
                 </div>

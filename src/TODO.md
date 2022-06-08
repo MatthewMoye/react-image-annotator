@@ -1,4 +1,7 @@
 - Unit tests
-- Implement tools, useMemo on shapes <- create componemt for svg in workspace and attach mouseEvents to it
-- Create annotation box to label cls, comment, and do tags
-- Fix bug when trying to move img while panning
+- Feature: Implement tools, useMemo on shapes <- create componemt for svg in workspace and attach mouseEvents to it
+- Feature: Create annotation box to label cls, comment, and do tags <- make sure that image rotation is not applied to this
+- Bug: when trying to move img while panning it cancels other action
+- Bug: when trying to zoom while using pan or imgMove it cancels other action
+- Bug: img movement tool movement rate changes based on zoom lvl
+- Bug: pan movement rate changes based on zoom lvl

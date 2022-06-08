@@ -1,6 +1,12 @@
 import { useRef } from "react";
 
-const useEvents = (dispatch, activeImageRef, imageContainerRef, activeTool) => {
+const useEvents = (
+  dispatch,
+  activeImageRef,
+  activeTool,
+  imageContainerRef,
+  zoomLvl
+) => {
   const mousePosRef = useRef({ x: 0, y: 0 });
   const panStartRef = useRef({ x: 0, y: 0 });
   const prevMousePosRef = useRef({ x: 0, y: 0 });
