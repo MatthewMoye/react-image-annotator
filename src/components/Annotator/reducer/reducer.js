@@ -3,16 +3,6 @@ const reducer = (state, action) => {
     case "SET_TOOL": {
       return { ...state, activeTool: action.tool };
     }
-    case "ROTATE": {
-      return {
-        ...state,
-        images: state.images.map((img, imgIdx) => {
-          return imgIdx === state.activeImageIdx
-            ? { ...img, angle: ((img.angle ? img.angle : 0) + 90) % 360 }
-            : img;
-        }),
-      };
-    }
     case "ZOOM": {
       const zoomPercent =
         action.direction * (state.zoomLvl < 2 ? 0.1 : 0.1 * state.zoomLvl);
@@ -26,6 +16,16 @@ const reducer = (state, action) => {
     }
     case "POINT": {
       return state;
+    }
+    case "ROTATE_IMAGE": {
+      return {
+        ...state,
+        images: state.images.map((img, imgIdx) => {
+          return imgIdx === state.activeImageIdx
+            ? { ...img, angle: ((img.angle ? img.angle : 0) + 90) % 360 }
+            : img;
+        }),
+      };
     }
     case "LOAD_IMAGE": {
       return {

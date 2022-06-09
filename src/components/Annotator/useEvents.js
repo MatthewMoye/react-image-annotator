@@ -9,7 +9,7 @@ const useEvents = (
 ) => {
   const mousePosRef = useRef({ x: 0, y: 0 });
   const panStartRef = useRef({ x: 0, y: 0 });
-  const prevMousePosRef = useRef({ x: 0, y: 0 });
+  const mvImageStartRef = useRef({ x: 0, y: 0 });
 
   const getMousePosition = (e, ref) => {
     return {
@@ -18,15 +18,13 @@ const useEvents = (
     };
   };
 
-  const updateRefPosition = (ref, mousePos, prevMousePos) => {
-    if (ref.current?.style) {
-      ref.current.style.top = `${
-        ref.current.offsetTop - (prevMousePos.current.y - mousePos.y)
-      }px`;
-      ref.current.style.left = `${
-        ref.current.offsetLeft - (prevMousePos.current.x - mousePos.x)
-      }px`;
-    }
+  const updateRefPosition = (ref, mousePos, startPos) => {
+    const { offsetLeft, offsetTop } = ref.current;
+    const yChange = mousePos.current.y - startPos.current.y;
+    const xChange = mousePos.current.x - startPos.current.x;
+    console.log(yChange);
+    ref.current.style.top = `${offsetTop + yChange * (moveImage ? 2 : 1)}px`;
+    ref.current.style.left = `${offsetLeft + xChange * (moveImage ? 2 : 1)}px`;
   };
 
   let pan, moveImage;
@@ -37,11 +35,11 @@ const useEvents = (
       if (pan) {
         updateRefPosition(
           imageContainerRef,
-          getMousePosition(e, imageContainerRef),
+          { current: getMousePosition(e, imageContainerRef) },
           panStartRef
         );
       } else if (moveImage) {
-        updateRefPosition(activeImageRef, mousePosRef.current, prevMousePosRef);
+        updateRefPosition(activeImageRef, mousePosRef, mvImageStartRef);
       }
       if (type) {
         dispatch({
@@ -58,7 +56,7 @@ const useEvents = (
         panStartRef.current = getMousePosition(e, imageContainerRef);
       } else if (startMoveImage) {
         moveImage = true;
-        prevMousePosRef.current = getMousePosition(e, activeImageRef);
+        mvImageStartRef.current = getMousePosition(e, activeImageRef);
       }
       if (type) {
         dispatch({

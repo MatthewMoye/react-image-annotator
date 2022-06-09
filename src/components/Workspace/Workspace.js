@@ -1,4 +1,3 @@
-import useWindowSize from "../../hooks/useWindowSize";
 import styles from "./Workspace.module.css";
 
 const Workspace = ({
@@ -12,8 +11,6 @@ const Workspace = ({
   mousePositionRef,
   zoomLvl,
 }) => {
-  const windowSize = useWindowSize();
-
   const onImgLoad = (e) => {
     dispatch({
       type: "LOAD_IMAGE",
@@ -28,7 +25,7 @@ const Workspace = ({
     if (activeTool === "selectImage") {
       dispatch({ type: "SET_ACTIVE_IMAGE", idx: idx });
     } else if (activeTool === "rotate" && activeImageIdx === idx) {
-      dispatch({ type: "ROTATE"});
+      dispatch({ type: "ROTATE_IMAGE" });
     } else if (activeTool === "moveImage" && activeImageIdx === idx) {
       events.onMouseDown(e, null, true);
     }
@@ -36,12 +33,12 @@ const Workspace = ({
 
   return (
     <div className={styles.workspaceContainer} {...events}>
-      <div className={styles.zoom} style={{ transform: `scale(${zoomLvl})` }}>
-        <div
-          className={styles.imgList}
-          style={{ windowSize }}
-          ref={imageContainerRef}
-        >
+      <div
+        className={styles.imgListContainer}
+        style={{ transform: `scale(${zoomLvl})` }}
+        ref={imageContainerRef}
+      >
+        <div className={styles.imgList}>
           {images.map((img, imgIdx) => {
             const isActiveImg = activeImageIdx === imgIdx;
             const imgMargin = {
