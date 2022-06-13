@@ -10,7 +10,7 @@ import {
 import styles from "./Toolbar.module.css";
 
 const Toolbar = (props) => {
-  const toolIcons = {
+  const toolIconList = {
     select: (obj) => <PanToolAlt {...obj} sx={{ fontSize: "48px" }} />,
     pan: (obj) => <PanTool {...obj} sx={{ fontSize: "36px" }} />,
     point: (obj) => <LocationSearching {...obj} sx={{ fontSize: "36px" }} />,
@@ -19,15 +19,6 @@ const Toolbar = (props) => {
     moveImage: (obj) => <BurstMode {...obj} sx={{ fontSize: "48px" }} />,
     rotate: (obj) => <Rotate90DegreesCw {...obj} sx={{ fontSize: "48px" }} />,
   };
-  const toolList = [
-    "select",
-    "pan",
-    "point",
-    "box",
-    "selectImage",
-    "moveImage",
-    "rotate",
-  ];
 
   const isActiveTool = (toolName) =>
     `toolIcon${props.activeTool === toolName ? "Active" : ""}`;
@@ -35,10 +26,10 @@ const Toolbar = (props) => {
 
   return (
     <div className={styles.container} onContextMenu={(e) => e.preventDefault()}>
-      {toolList.map((tool) => {
-        const ToolComponent = toolIcons[tool];
+      {Object.keys(toolIconList).map((tool) => {
+        const ToolIcon = toolIconList[tool];
         return (
-          <ToolComponent
+          <ToolIcon
             key={`${tool}-tool`}
             className={styles[isActiveTool(tool)]}
             onClick={() => updateTool(tool)}

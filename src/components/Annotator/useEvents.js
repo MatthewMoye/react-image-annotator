@@ -71,7 +71,8 @@ const useEvents = (
       }
     },
     onMouseUp: (e, type) => {
-      if (e.button === 2) dispatch({ type: "PAN", toggle: false });
+      if (e.button === 2 || activeTool === "pan")
+        dispatch({ type: "PAN", toggle: false });
       else if (e.button === 0) dispatch({ type: "MOVE_IMAGE", toggle: false });
       if (type) {
         dispatch({
