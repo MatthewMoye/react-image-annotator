@@ -3,6 +3,9 @@ const reducer = (state, action) => {
     case "SET_TOOL": {
       return { ...state, activeTool: action.tool };
     }
+    case "PAN": {
+      return { ...state, isPanning: action.toggle };
+    }
     case "ZOOM": {
       const zoomPercent =
         action.direction * (state.zoomLvl < 2 ? 0.1 : 0.1 * state.zoomLvl);
@@ -16,6 +19,9 @@ const reducer = (state, action) => {
     }
     case "POINT": {
       return state;
+    }
+    case "MOVE_IMAGE": {
+      return { ...state, isMovingImg: action.toggle };
     }
     case "ROTATE_IMAGE": {
       return {
@@ -39,6 +45,9 @@ const reducer = (state, action) => {
     }
     case "SET_ACTIVE_IMAGE": {
       return { ...state, activeTool: "select", activeImageIdx: action.idx };
+    }
+    case "STOP_ALL_ACTIONS": {
+      return { ...state, isPanning: false, isMovingImg: false };
     }
     default: {
       return state;

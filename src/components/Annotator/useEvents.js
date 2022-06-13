@@ -5,6 +5,8 @@ const useEvents = (
   activeImageRef,
   activeTool,
   imageContainerRef,
+  isMovingImg,
+  isPanning,
   zoomLvl
 ) => {
   const mousePosRef = useRef({ x: 0, y: 0 });
@@ -19,26 +21,27 @@ const useEvents = (
   };
 
   const updateRefPosition = (ref, mousePos, startPos) => {
-    const { offsetLeft, offsetTop } = ref.current;
-    const yChange = mousePos.current.y - startPos.current.y;
-    const xChange = mousePos.current.x - startPos.current.x;
-    console.log(yChange);
-    ref.current.style.top = `${offsetTop + yChange * (moveImage ? 2 : 1)}px`;
-    ref.current.style.left = `${offsetLeft + xChange * (moveImage ? 2 : 1)}px`;
-  };
+    const { offsetLeft: refoffsetLeft, offsetTop: refoffsetTop } = ref.current;
 
-  let pan, moveImage;
+    // const {left, top} = ref.current.getBoundingClientRect()
+    // console.log(left);
+
+    const newTop = refoffsetTop + (mousePos.current.y - startPos.current.y);
+    const newLeft = refoffsetLeft + (mousePos.current.x - startPos.current.x);
+    ref.current.style.top = `${newTop}px`;
+    ref.current.style.left = `${newLeft}px`;
+  };
 
   const events = {
     onMouseMove: (e, type) => {
       mousePosRef.current = getMousePosition(e, activeImageRef);
-      if (pan) {
+      if (isPanning) {
         updateRefPosition(
           imageContainerRef,
           { current: getMousePosition(e, imageContainerRef) },
           panStartRef
         );
-      } else if (moveImage) {
+      } else if (isMovingImg) {
         updateRefPosition(activeImageRef, mousePosRef, mvImageStartRef);
       }
       if (type) {
@@ -52,10 +55,10 @@ const useEvents = (
     },
     onMouseDown: (e, type, startMoveImage) => {
       if (e.button === 2 || activeTool === "pan") {
-        pan = true;
+        dispatch({ type: "PAN", toggle: true });
         panStartRef.current = getMousePosition(e, imageContainerRef);
       } else if (startMoveImage) {
-        moveImage = true;
+        dispatch({ type: "MOVE_IMAGE", toggle: true });
         mvImageStartRef.current = getMousePosition(e, activeImageRef);
       }
       if (type) {
@@ -68,11 +71,8 @@ const useEvents = (
       }
     },
     onMouseUp: (e, type) => {
-      if (e.button === 0) {
-        moveImage = false;
-      } else if (e.button === 2) {
-        pan = false;
-      }
+      if (e.button === 2) dispatch({ type: "PAN", toggle: false });
+      else if (e.button === 0) dispatch({ type: "MOVE_IMAGE", toggle: false });
       if (type) {
         dispatch({
           type: type,
@@ -83,8 +83,7 @@ const useEvents = (
       }
     },
     onMouseLeave: () => {
-      moveImage = false;
-      pan = false;
+      dispatch({ type: "STOP_ALL_ACTIONS" });
     },
     onWheel: (e) => {
       const direction = e.deltaY < 0 ? 1 : e.deltaY > 0 ? -1 : 0;

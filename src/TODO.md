@@ -5,7 +5,5 @@
 - Create menu bar at top of screen to save/load annotations (json)
 
 # Bugs
-- when trying to move img while panning it cancels other action
-- when trying to zoom while using pan or imgMove it cancels other action
-
-- img movement tool movement rate changes based on zoom lvl
+- img movement + pan tool movement rate changes based on zoom lvl
+- fix img movement when trying to pan while moving an image

@@ -9,6 +9,8 @@ const Annotator = ({ images }) => {
     activeImageIdx: 0,
     activeTool: "select",
     images: images,
+    isPanning: false,
+    isMovingImg: false,
     zoomLvl: 1,
   });
 
@@ -20,7 +22,9 @@ const Annotator = ({ images }) => {
     activeImageRef,
     state.activeTool,
     imageContainerRef,
-    state.zoomLvl
+    state.isMovingImg,
+    state.isPanning,
+    state.zoomLvl,
   );
 
   return (

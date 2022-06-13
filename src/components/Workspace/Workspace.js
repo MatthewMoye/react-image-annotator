@@ -36,9 +36,8 @@ const Workspace = ({
       <div
         className={styles.imgListContainer}
         style={{ transform: `scale(${zoomLvl})` }}
-        ref={imageContainerRef}
       >
-        <div className={styles.imgList}>
+        <div className={styles.imgList} ref={imageContainerRef}>
           {images.map((img, imgIdx) => {
             const isActiveImg = activeImageIdx === imgIdx;
             const imgMargin = {
