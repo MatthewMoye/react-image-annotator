@@ -5,5 +5,4 @@
 - Create menu bar at top of screen to save/load annotations (json)
 
 # Bugs
-- img movement + pan tool movement rate changes based on zoom lvl
 - fix img movement when trying to pan while moving an image

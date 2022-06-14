@@ -35,7 +35,11 @@ const Workspace = ({
     <div className={styles.workspaceContainer} {...events}>
       <div
         className={styles.imgListContainer}
-        style={{ transform: `scale(${zoomLvl})` }}
+        style={{
+          transform: `scale(${zoomLvl})`,
+          msTransform: `scale(${zoomLvl})`,
+          WebkitTransform: `scale(${zoomLvl})`,
+        }}
       >
         <div className={styles.imgList} ref={imageContainerRef}>
           {images.map((img, imgIdx) => {

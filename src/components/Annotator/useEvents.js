@@ -21,15 +21,11 @@ const useEvents = (
   };
 
   const updateRefPosition = (ref, mousePos, startPos) => {
-    const { offsetLeft: refoffsetLeft, offsetTop: refoffsetTop } = ref.current;
-
-    // const {left, top} = ref.current.getBoundingClientRect()
-    // console.log(left);
-
-    const newTop = refoffsetTop + (mousePos.current.y - startPos.current.y);
-    const newLeft = refoffsetLeft + (mousePos.current.x - startPos.current.x);
-    ref.current.style.top = `${newTop}px`;
-    ref.current.style.left = `${newLeft}px`;
+    const mouseChangeX = (mousePos.current.x - startPos.current.x) / zoomLvl;
+    const mouseChangeY = (mousePos.current.y - startPos.current.y) / zoomLvl;
+    ref.current.style.transform =
+      ref.current.style.transform +
+      `translate(${mouseChangeX}px, ${mouseChangeY}px)`;
   };
 
   const events = {
@@ -41,8 +37,10 @@ const useEvents = (
           { current: getMousePosition(e, imageContainerRef) },
           panStartRef
         );
+        panStartRef.current = getMousePosition(e, imageContainerRef);
       } else if (isMovingImg) {
         updateRefPosition(activeImageRef, mousePosRef, mvImageStartRef);
+        mvImageStartRef.current = getMousePosition(e, activeImageRef);
       }
       if (type) {
         dispatch({
