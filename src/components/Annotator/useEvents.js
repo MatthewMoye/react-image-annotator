@@ -76,8 +76,10 @@ const useEvents = (
       }
     },
     onMouseUp: (e, type) => {
-      if (e.button === 2 || activeTool === "pan")
+      if (e.button === 2 || activeTool === "pan") {
         dispatch({ type: "PAN", toggle: false });
+        mvImageStartRef.current = getMousePosition(e, activeImageRef);
+      }
       else if (e.button === 0) dispatch({ type: "MOVE_IMAGE", toggle: false });
       if (type) {
         dispatch({
