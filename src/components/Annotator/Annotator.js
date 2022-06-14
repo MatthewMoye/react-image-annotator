@@ -24,7 +24,7 @@ const Annotator = ({ images }) => {
     imageContainerRef,
     state.isMovingImg,
     state.isPanning,
-    state.zoomLvl,
+    state.zoomLvl
   );
 
   return (

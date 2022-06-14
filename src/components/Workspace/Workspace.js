@@ -1,3 +1,4 @@
+import Regions from "../Regions/Regions";
 import styles from "./Workspace.module.css";
 
 const Workspace = ({
@@ -91,7 +92,15 @@ const Workspace = ({
                       height: `${img.height + imgMargin.height * 2}px`,
                       transform: `rotate(${img.angle}deg)`,
                     }}
-                  ></svg>
+                  >
+                    <Regions
+                      dispatch={dispatch}
+                      events={events}
+                      imgMargin={imgMargin}
+                      mousePositionRef={mousePositionRef}
+                      zoomLvl={zoomLvl}
+                    />
+                  </svg>
                 </div>
               </div>
             );
