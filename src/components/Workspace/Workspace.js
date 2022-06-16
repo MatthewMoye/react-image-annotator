@@ -16,8 +16,8 @@ const Workspace = ({
     dispatch({
       type: "LOAD_IMAGE",
       id: e.target.id,
-      w: e.target.width,
-      h: e.target.height,
+      w: e.target.naturalWidth,
+      h: e.target.naturalHeight,
       regions: regions,
     });
   };
