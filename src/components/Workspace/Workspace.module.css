@@ -43,7 +43,3 @@
   -ms-user-select: none;
   pointer-events: none;
 }
-
-.annotationList {
-  position: absolute;
-}

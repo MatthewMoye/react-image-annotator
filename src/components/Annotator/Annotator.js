@@ -1,7 +1,7 @@
 import { useReducer, useRef } from "react";
 import Toolbar from "../Toolbar/Toolbar";
 import Workspace from "../Workspace/Workspace";
-import reducer from "./reducer/reducer";
+import reducer from "./reducers/reducer";
 import useEvents from "./useEvents";
 
 const Annotator = ({ images }) => {

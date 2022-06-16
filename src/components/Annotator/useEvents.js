@@ -13,10 +13,18 @@ const useEvents = (
   const panStartRef = useRef({ x: 0, y: 0 });
   const mvImageStartRef = useRef({ x: 0, y: 0 });
 
-  const getMousePosition = (e, ref) => {
+  const getPosition = (e, ref) => {
     return {
       x: e.pageX - ref.current.offsetLeft,
       y: e.pageY - ref.current.offsetTop,
+    };
+  };
+
+  const getMousePosition = (e) => {
+    const { top, left } = activeImageRef.current.getBoundingClientRect();
+    return {
+      x: (e.pageX - left) / activeImageRef.current.clientWidth / zoomLvl,
+      y: (e.pageY - top) / activeImageRef.current.clientHeight / zoomLvl,
     };
   };
 
@@ -36,71 +44,76 @@ const useEvents = (
   };
 
   const events = {
-    onMouseMove: (e, type) => {
-      const { top, left } = activeImageRef.current.getBoundingClientRect();
-      mousePosRef.current = { x: e.clientX - left, y: e.clientY - top };
+    onMouseMove: (e, type, operation) => {
+      mousePosRef.current = getMousePosition(e);
       if (isPanning) {
         updateRefPosition(
           imageContainerRef,
-          getMousePosition(e, imageContainerRef),
+          getPosition(e, imageContainerRef),
           panStartRef
         );
-        panStartRef.current = getMousePosition(e, imageContainerRef);
+        panStartRef.current = getPosition(e, imageContainerRef);
       } else if (isMovingImg) {
         updateRefPosition(
           activeImageRef,
-          getMousePosition(e, activeImageRef),
+          getPosition(e, activeImageRef),
           mvImageStartRef
         );
-        mvImageStartRef.current = getMousePosition(e, activeImageRef);
+        mvImageStartRef.current = getPosition(e, activeImageRef);
       }
       dispatch({
         type: type,
-        event: "mouseMove",
+        operation: operation,
+        event: "MOUSE_MOVE",
         x: mousePosRef.current.x,
         y: mousePosRef.current.y,
       });
     },
-    onMouseDown: (e, type, startMoveImage) => {
+    onMouseDown: (e, type, operation, startMoveImage) => {
+      mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
         dispatch({ type: "PAN", toggle: true });
-        panStartRef.current = getMousePosition(e, imageContainerRef);
+        panStartRef.current = getPosition(e, imageContainerRef);
       } else if (startMoveImage) {
         dispatch({ type: "MOVE_IMAGE", toggle: true });
-        mvImageStartRef.current = getMousePosition(e, activeImageRef);
+        mvImageStartRef.current = getPosition(e, activeImageRef);
       }
       if (type) {
         dispatch({
           type: type,
-          event: "mouseDown",
+          operation: operation,
+          event: "MOUSE_DOWN",
           x: mousePosRef.current.x,
           y: mousePosRef.current.y,
         });
       }
     },
-    onMouseUp: (e, type) => {
+    onMouseUp: (e, type, operation) => {
+      mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
         dispatch({ type: "PAN", toggle: false });
-        mvImageStartRef.current = getMousePosition(e, activeImageRef);
+        mvImageStartRef.current = getPosition(e, activeImageRef);
       } else if (e.button === 0)
         dispatch({ type: "MOVE_IMAGE", toggle: false });
       if (type) {
         dispatch({
           type: type,
-          event: "mouseUp",
+          operation: operation,
+          event: "MOUSE_UP",
           x: mousePosRef.current.x,
           y: mousePosRef.current.y,
         });
       }
     },
-    onMouseLeave: () => {
+    onMouseLeave: (e) => {
+      mousePosRef.current = getMousePosition(e);
       dispatch({ type: "STOP_ALL_ACTIONS" });
     },
     onWheel: (e) => {
       const direction = e.deltaY < 0 ? 1 : e.deltaY > 0 ? -1 : 0;
       dispatch({
         type: "ZOOM",
-        event: "onWheel",
+        event: "WHEEL",
         direction: direction,
       });
     },

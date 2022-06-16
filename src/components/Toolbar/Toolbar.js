@@ -13,8 +13,8 @@ const Toolbar = (props) => {
   const toolIconList = {
     select: (obj) => <PanToolAlt {...obj} sx={{ fontSize: "48px" }} />,
     pan: (obj) => <PanTool {...obj} sx={{ fontSize: "36px" }} />,
-    point: (obj) => <LocationSearching {...obj} sx={{ fontSize: "36px" }} />,
-    box: (obj) => <CropSquare {...obj} sx={{ fontSize: "48px" }} />,
+    createPoint: (obj) => <LocationSearching {...obj} sx={{ fontSize: "36px" }} />,
+    createBox: (obj) => <CropSquare {...obj} sx={{ fontSize: "48px" }} />,
     selectImage: (obj) => <Image {...obj} sx={{ fontSize: "48px" }} />,
     moveImage: (obj) => <BurstMode {...obj} sx={{ fontSize: "48px" }} />,
     rotate: (obj) => <Rotate90DegreesCw {...obj} sx={{ fontSize: "48px" }} />,

@@ -12,12 +12,13 @@ const Workspace = ({
   mousePositionRef,
   zoomLvl,
 }) => {
-  const onImgLoad = (e) => {
+  const onImgLoad = (e, regions) => {
     dispatch({
       type: "LOAD_IMAGE",
       id: e.target.id,
-      w: e.target.naturalWidth,
-      h: e.target.naturalHeight,
+      w: e.target.width,
+      h: e.target.height,
+      regions: regions,
     });
   };
 
@@ -28,7 +29,7 @@ const Workspace = ({
     } else if (activeTool === "rotate" && activeImageIdx === idx) {
       dispatch({ type: "ROTATE_IMAGE" });
     } else if (activeTool === "moveImage" && activeImageIdx === idx) {
-      events.onMouseDown(e, null, true);
+      events.onMouseDown(e, null, null, true);
     }
   };
 
@@ -63,7 +64,12 @@ const Workspace = ({
                   key={`img-box-${img.id}`}
                   onMouseDown={(e) => handleImgMouseDown(e, imgIdx)}
                   className={styles.imgBox}
-                  style={{ zIndex: isActiveImg ? 1 : 0 }}
+                  style={{
+                    zIndex: isActiveImg ? 1 : 0,
+                    border: `solid 3px ${
+                      isActiveImg ? "#00ea9c" : "transparent"
+                    }`,
+                  }}
                   ref={isActiveImg ? activeImageRef : null}
                 >
                   <img
@@ -71,36 +77,25 @@ const Workspace = ({
                     id={img.id}
                     src={img.src}
                     alt={img.alt}
-                    onLoad={onImgLoad}
+                    onLoad={(e) => onImgLoad(e, img.regions)}
                     style={{
                       zIndex: isActiveImg ? 1 : 0,
                       width: `${img.width}px`,
                       height: `${img.height}px`,
-                      border: `solid 3px ${
-                        isActiveImg ? "#00ea9c" : "transparent"
-                      }`,
                       transform: `rotate(${img.angle}deg)`,
                     }}
                     className={styles.image}
                   />
-                  <svg
-                    key={`annotation-list-${img.id}`}
-                    className={styles.annotationList}
-                    style={{
-                      zIndex: isActiveImg ? 1 : 0,
-                      width: `${img.width + imgMargin.width * 2}px`,
-                      height: `${img.height + imgMargin.height * 2}px`,
-                      transform: `rotate(${img.angle}deg)`,
-                    }}
-                  >
+                  {img.regions && (
                     <Regions
+                      activeTool={activeTool}
                       dispatch={dispatch}
                       events={events}
+                      img={img}
                       imgMargin={imgMargin}
-                      mousePositionRef={mousePositionRef}
-                      zoomLvl={zoomLvl}
+                      isActiveImg={isActiveImg}
                     />
-                  </svg>
+                  )}
                 </div>
               </div>
             );

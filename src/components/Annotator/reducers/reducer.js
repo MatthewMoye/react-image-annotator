@@ -1,3 +1,5 @@
+import pointTool from "./point-tool";
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_TOOL": {
@@ -18,7 +20,7 @@ const reducer = (state, action) => {
       return state;
     }
     case "POINT": {
-      return state;
+      return pointTool(state, action);
     }
     case "MOVE_IMAGE": {
       return { ...state, isMovingImg: action.toggle };
@@ -39,7 +41,12 @@ const reducer = (state, action) => {
         images: state.images.map((img) =>
           img.id !== action.id
             ? img
-            : { ...img, width: action.w, height: action.h }
+            : {
+                ...img,
+                width: action.w,
+                height: action.h,
+                regions: action.regions ? action.regions : [],
+              }
         ),
       };
     }
