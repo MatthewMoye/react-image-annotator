@@ -1,17 +1,33 @@
+import { useRef } from "react";
 import Regions from "../Regions/Regions";
+import useEvents from "./useEvents";
 import styles from "./Workspace.module.css";
 
 const Workspace = ({
   activeImageIdx,
-  activeImageRef,
   activeTool,
   dispatch,
-  events,
-  imageContainerRef,
   images,
-  mousePositionRef,
+  isPanning,
+  isMovingImg,
   zoomLvl,
 }) => {
+  const activeImageAngle = images[activeImageIdx]?.angle;
+  const activeImageRef = useRef();
+  const imageContainerRef = useRef();
+
+  // eslint-disable-next-line
+  const [mousePositionRef, events] = useEvents(
+    activeImageAngle,
+    activeImageRef,
+    activeTool,
+    dispatch,
+    imageContainerRef,
+    isMovingImg,
+    isPanning,
+    zoomLvl
+  );
+
   const onImgLoad = (e, regions) => {
     dispatch({
       type: "LOAD_IMAGE",
@@ -82,7 +98,6 @@ const Workspace = ({
                       zIndex: isActiveImg ? 1 : 0,
                       width: `${img.width}px`,
                       height: `${img.height}px`,
-                      transform: `rotate(${img.angle}deg)`,
                     }}
                     className={styles.image}
                   />

@@ -1,9 +1,10 @@
 import { useRef } from "react";
 
 const useEvents = (
-  dispatch,
+  activeImageAngle,
   activeImageRef,
   activeTool,
+  dispatch,
   imageContainerRef,
   isMovingImg,
   isPanning,
@@ -13,53 +14,55 @@ const useEvents = (
   const panStartRef = useRef({ x: 0, y: 0 });
   const mvImageStartRef = useRef({ x: 0, y: 0 });
 
-  const getPosition = (e, ref) => {
-    return {
-      x: e.pageX - ref.current.offsetLeft,
-      y: e.pageY - ref.current.offsetTop,
-    };
-  };
-
   const getMousePosition = (e) => {
     const { top, left } = activeImageRef.current.getBoundingClientRect();
+    const { clientWidth, clientHeight } = activeImageRef.current;
+    const activeBorderPix = 3 * zoomLvl;
     return {
-      x: (e.pageX - left) / activeImageRef.current.clientWidth / zoomLvl,
-      y: (e.pageY - top) / activeImageRef.current.clientHeight / zoomLvl,
+      x: (e.pageX - left - activeBorderPix) / clientWidth / zoomLvl,
+      y: (e.pageY - top - activeBorderPix) / clientHeight / zoomLvl,
     };
   };
 
-  const updateRefPosition = (ref, mousePos, startPos) => {
-    const transform = ref.current.style.transform
-      .slice(10, -1)
-      .replaceAll("px", "")
-      .split(", ");
+  const updateRefPosition = (ref, angle, mousePos, startPos) => {
+    const transform =
+      ref.current.style.transform.match(/[-+]?[0-9]*\.?[0-9]+/g);
     const [x, y] = transform
-      ? [Number(transform[0]), transform.length > 1 ? Number(transform[1]) : 0]
+      ? [Number(transform[0]), transform.length > 2 ? Number(transform[1]) : 0]
       : [0, 0];
     const updateX = (mousePos.x - startPos.current.x) / zoomLvl;
     const updateY = (mousePos.y - startPos.current.y) / zoomLvl;
     ref.current.style.transform = `translate(${x + updateX}px, ${
       y + updateY
-    }px)`;
+    }px) rotate(${angle}deg)`;
   };
 
   const events = {
     onMouseMove: (e, type, operation) => {
       mousePosRef.current = getMousePosition(e);
+      console.log(mousePosRef.current);
+      // console.log(
+      //   "x: ",
+      //   Math.cos(activeImageAngle) * (mousePosRef.current.x - 0.5) -
+      //     Math.sin(activeImageAngle) * (mousePosRef.current.y - 0.5) +
+      //     0.5
+      // );
       if (isPanning) {
         updateRefPosition(
           imageContainerRef,
-          getPosition(e, imageContainerRef),
+          0,
+          { x: e.pageX, y: e.pageY },
           panStartRef
         );
-        panStartRef.current = getPosition(e, imageContainerRef);
+        panStartRef.current = { x: e.pageX, y: e.pageY };
       } else if (isMovingImg) {
         updateRefPosition(
           activeImageRef,
-          getPosition(e, activeImageRef),
+          activeImageAngle,
+          { x: e.pageX, y: e.pageY },
           mvImageStartRef
         );
-        mvImageStartRef.current = getPosition(e, activeImageRef);
+        mvImageStartRef.current = { x: e.pageX, y: e.pageY };
       }
       dispatch({
         type: type,
@@ -73,10 +76,10 @@ const useEvents = (
       mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
         dispatch({ type: "PAN", toggle: true });
-        panStartRef.current = getPosition(e, imageContainerRef);
+        panStartRef.current = { x: e.pageX, y: e.pageY };
       } else if (startMoveImage) {
         dispatch({ type: "MOVE_IMAGE", toggle: true });
-        mvImageStartRef.current = getPosition(e, activeImageRef);
+        mvImageStartRef.current = { x: e.pageX, y: e.pageY };
       }
       if (type) {
         dispatch({
@@ -92,9 +95,10 @@ const useEvents = (
       mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
         dispatch({ type: "PAN", toggle: false });
-        mvImageStartRef.current = getPosition(e, activeImageRef);
-      } else if (e.button === 0)
+        mvImageStartRef.current = { x: e.pageX, y: e.pageY };
+      } else if (e.button === 0) {
         dispatch({ type: "MOVE_IMAGE", toggle: false });
+      }
       if (type) {
         dispatch({
           type: type,

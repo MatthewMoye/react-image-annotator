@@ -22,7 +22,6 @@ const Regions = ({
         zIndex: isActiveImg ? 1 : 0,
         width: `${img.width + imgMargin.width * 2}px`,
         height: `${img.height + imgMargin.height * 2}px`,
-        transform: `rotate(${img.angle}deg)`,
       }}
       onMouseDown={handleMouseDown}
     >

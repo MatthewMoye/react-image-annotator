@@ -43,6 +43,7 @@ const reducer = (state, action) => {
             ? img
             : {
                 ...img,
+                angle: 0,
                 width: action.w,
                 height: action.h,
                 regions: action.regions ? action.regions : [],
