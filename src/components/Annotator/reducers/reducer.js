@@ -30,7 +30,7 @@ const reducer = (state, action) => {
         ...state,
         images: state.images.map((img, imgIdx) => {
           return imgIdx === state.activeImageIdx
-            ? { ...img, angle: ((img.angle ? img.angle : 0) + 90) % 360 }
+            ? { ...img, angle: ((img.angle ? img.angle : 0) + 45) % 360 }
             : img;
         }),
       };

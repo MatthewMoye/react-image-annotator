@@ -69,48 +69,57 @@ const Workspace = ({
             return (
               <div
                 key={`img-container-${img.id}`}
-                className={styles.imageContainer}
+                className={styles.imgContainer}
                 style={{
                   minWidth: `${Math.max(img.width, img.height)}px`,
                   minHeight: `${Math.max(img.width, img.height)}px`,
                   margin: `${imgMargin.height}px ${imgMargin.width}px`,
+                  zIndex: isActiveImg ? 1 : 0,
                 }}
               >
                 <div
                   key={`img-box-${img.id}`}
-                  onMouseDown={(e) => handleImgMouseDown(e, imgIdx)}
                   className={styles.imgBox}
                   style={{
-                    zIndex: isActiveImg ? 1 : 0,
-                    border: `solid 3px ${
-                      isActiveImg ? "#00ea9c" : "transparent"
-                    }`,
+                    width: `${img.width}px`,
+                    height: `${img.height}px`,
                   }}
                   ref={isActiveImg ? activeImageRef : null}
                 >
-                  <img
-                    key={`img-${img.id}`}
-                    id={img.id}
-                    src={img.src}
-                    alt={img.alt}
-                    onLoad={(e) => onImgLoad(e, img.regions)}
+                  <div
+                    key={`img-area-${img.id}`}
+                    onMouseDown={(e) => handleImgMouseDown(e, imgIdx)}
+                    className={styles.imgArea}
                     style={{
-                      zIndex: isActiveImg ? 1 : 0,
-                      width: `${img.width}px`,
-                      height: `${img.height}px`,
+                      border: `solid 3px ${
+                        isActiveImg ? "#00ea9c" : "transparent"
+                      }`,
+                      transform: `rotate(${img.angle}deg)`,
                     }}
-                    className={styles.image}
-                  />
-                  {img.regions && (
-                    <Regions
-                      activeTool={activeTool}
-                      dispatch={dispatch}
-                      events={events}
-                      img={img}
-                      imgMargin={imgMargin}
-                      isActiveImg={isActiveImg}
+                  >
+                    <img
+                      key={`img-${img.id}`}
+                      id={img.id}
+                      src={img.src}
+                      alt={img.alt}
+                      onLoad={(e) => onImgLoad(e, img.regions)}
+                      style={{
+                        width: `${img.width}px`,
+                        height: `${img.height}px`,
+                      }}
+                      className={styles.img}
                     />
-                  )}
+                    {img.regions && (
+                      <Regions
+                        activeTool={activeTool}
+                        dispatch={dispatch}
+                        events={events}
+                        img={img}
+                        imgMargin={imgMargin}
+                        isActiveImg={isActiveImg}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             );

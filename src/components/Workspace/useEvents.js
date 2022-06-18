@@ -15,42 +15,59 @@ const useEvents = (
   const mvImageStartRef = useRef({ x: 0, y: 0 });
 
   const getMousePosition = (e) => {
-    const { top, left } = activeImageRef.current.getBoundingClientRect();
+    const { top, bottom, left, right } =
+      activeImageRef.current.getBoundingClientRect();
     const { clientWidth, clientHeight } = activeImageRef.current;
-    const activeBorderPix = 3 * zoomLvl;
+
+    const imgCenter = { x: (left + right) / 2, y: (top + bottom) / 2 };
+    const sinAngle = Math.sin(activeImageAngle * (Math.PI / 180));
+    const cosAngle = Math.cos(activeImageAngle * (Math.PI / 180));
+
+    const imgOrig = {
+      left:
+        imgCenter.x -
+        (cosAngle * (clientWidth / 2) - sinAngle * (clientHeight / 2)) *
+          zoomLvl,
+      top:
+        imgCenter.y -
+        (sinAngle * (clientWidth / 2) + cosAngle * (clientHeight / 2)) *
+          zoomLvl,
+    };
+
     return {
-      x: (e.pageX - left - activeBorderPix) / clientWidth / zoomLvl,
-      y: (e.pageY - top - activeBorderPix) / clientHeight / zoomLvl,
+      x:
+        (cosAngle * (e.pageX - imgOrig.left) -
+          sinAngle * (e.pageY - imgOrig.top)) /
+        clientWidth /
+        zoomLvl,
+      y:
+        (sinAngle * (e.pageX - imgOrig.left) +
+          cosAngle * (e.pageY - imgOrig.top)) /
+        clientHeight /
+        zoomLvl,
     };
   };
 
-  const updateRefPosition = (ref, angle, mousePos, startPos) => {
+  const updateRefPosition = (ref, mousePos, startPos) => {
     const transform =
       ref.current.style.transform.match(/[-+]?[0-9]*\.?[0-9]+/g);
     const [x, y] = transform
-      ? [Number(transform[0]), transform.length > 2 ? Number(transform[1]) : 0]
+      ? [Number(transform[0]), transform.length > 1 ? Number(transform[1]) : 0]
       : [0, 0];
     const updateX = (mousePos.x - startPos.current.x) / zoomLvl;
     const updateY = (mousePos.y - startPos.current.y) / zoomLvl;
     ref.current.style.transform = `translate(${x + updateX}px, ${
       y + updateY
-    }px) rotate(${angle}deg)`;
+    }px)`;
   };
 
   const events = {
     onMouseMove: (e, type, operation) => {
       mousePosRef.current = getMousePosition(e);
       console.log(mousePosRef.current);
-      // console.log(
-      //   "x: ",
-      //   Math.cos(activeImageAngle) * (mousePosRef.current.x - 0.5) -
-      //     Math.sin(activeImageAngle) * (mousePosRef.current.y - 0.5) +
-      //     0.5
-      // );
       if (isPanning) {
         updateRefPosition(
           imageContainerRef,
-          0,
           { x: e.pageX, y: e.pageY },
           panStartRef
         );
@@ -58,7 +75,6 @@ const useEvents = (
       } else if (isMovingImg) {
         updateRefPosition(
           activeImageRef,
-          activeImageAngle,
           { x: e.pageX, y: e.pageY },
           mvImageStartRef
         );

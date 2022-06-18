@@ -19,7 +19,6 @@ const Regions = ({
       key={`annotation-list-${img.id}`}
       className={styles.annotationList}
       style={{
-        zIndex: isActiveImg ? 1 : 0,
         width: `${img.width + imgMargin.width * 2}px`,
         height: `${img.height + imgMargin.height * 2}px`,
       }}

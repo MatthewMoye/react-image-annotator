@@ -22,7 +22,7 @@
   height: 100%;
 }
 
-.imageContainer {
+.imgContainer {
   position: relative;
   display: flex;
   align-items: center;
@@ -30,13 +30,19 @@
 }
 
 .imgBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.imgArea {
   position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.image {
+.img {
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
