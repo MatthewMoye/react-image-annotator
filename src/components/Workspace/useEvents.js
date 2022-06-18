@@ -20,8 +20,8 @@ const useEvents = (
     const { clientWidth, clientHeight } = activeImageRef.current;
 
     const imgCenter = { x: (left + right) / 2, y: (top + bottom) / 2 };
-    const sinAngle = Math.sin(activeImageAngle * (Math.PI / 180));
-    const cosAngle = Math.cos(activeImageAngle * (Math.PI / 180));
+    let sinAngle = Math.sin(activeImageAngle * (Math.PI / 180));
+    let cosAngle = Math.cos(activeImageAngle * (Math.PI / 180));
 
     const imgOrig = {
       left:
@@ -34,17 +34,15 @@ const useEvents = (
           zoomLvl,
     };
 
+    const newX = e.pageX - imgOrig.left;
+    const newY = e.pageY - imgOrig.top;
+
+    sinAngle = Math.sin(-activeImageAngle * (Math.PI / 180));
+    cosAngle = Math.cos(-activeImageAngle * (Math.PI / 180));
+
     return {
-      x:
-        (cosAngle * (e.pageX - imgOrig.left) -
-          sinAngle * (e.pageY - imgOrig.top)) /
-        clientWidth /
-        zoomLvl,
-      y:
-        (sinAngle * (e.pageX - imgOrig.left) +
-          cosAngle * (e.pageY - imgOrig.top)) /
-        clientHeight /
-        zoomLvl,
+      x: (newX * cosAngle - sinAngle * newY) / clientWidth / zoomLvl,
+      y: (newX * sinAngle + cosAngle * newY) / clientHeight / zoomLvl,
     };
   };
 
