@@ -15,34 +15,21 @@ const useEvents = (
   const mvImageStartRef = useRef({ x: 0, y: 0 });
 
   const getMousePosition = (e) => {
+    const { clientWidth, clientHeight } = activeImageRef.current;
     const { top, bottom, left, right } =
       activeImageRef.current.getBoundingClientRect();
-    const { clientWidth, clientHeight } = activeImageRef.current;
 
     const imgCenter = { x: (left + right) / 2, y: (top + bottom) / 2 };
-    let sinAngle = Math.sin(activeImageAngle * (Math.PI / 180));
-    let cosAngle = Math.cos(activeImageAngle * (Math.PI / 180));
 
-    const imgOrig = {
-      left:
-        imgCenter.x -
-        (cosAngle * (clientWidth / 2) - sinAngle * (clientHeight / 2)) *
-          zoomLvl,
-      top:
-        imgCenter.y -
-        (sinAngle * (clientWidth / 2) + cosAngle * (clientHeight / 2)) *
-          zoomLvl,
-    };
+    const xDist = e.pageX - imgCenter.x;
+    const yDist = e.pageY - imgCenter.y;
 
-    const newX = e.pageX - imgOrig.left;
-    const newY = e.pageY - imgOrig.top;
-
-    sinAngle = Math.sin(-activeImageAngle * (Math.PI / 180));
-    cosAngle = Math.cos(-activeImageAngle * (Math.PI / 180));
+    const sin = Math.sin(-activeImageAngle * (Math.PI / 180));
+    const cos = Math.cos(-activeImageAngle * (Math.PI / 180));
 
     return {
-      x: (newX * cosAngle - sinAngle * newY) / clientWidth / zoomLvl,
-      y: (newX * sinAngle + cosAngle * newY) / clientHeight / zoomLvl,
+      x: (xDist * cos - sin * yDist) / clientWidth / zoomLvl + 0.5,
+      y: (xDist * sin + cos * yDist) / clientHeight / zoomLvl + 0.5,
     };
   };
 
@@ -62,7 +49,6 @@ const useEvents = (
   const events = {
     onMouseMove: (e, type, operation) => {
       mousePosRef.current = getMousePosition(e);
-      console.log(mousePosRef.current);
       if (isPanning) {
         updateRefPosition(
           imageContainerRef,
