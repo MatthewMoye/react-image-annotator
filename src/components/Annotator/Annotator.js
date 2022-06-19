@@ -6,6 +6,7 @@ import reducer from "./reducers/reducer";
 const Annotator = ({ images }) => {
   const [state, dispatch] = useReducer(reducer, {
     activeImageIdx: 0,
+    activeRegionId: null,
     activeTool: "select",
     images: images,
     isPanning: false,
@@ -17,6 +18,7 @@ const Annotator = ({ images }) => {
     <>
       <Workspace
         activeImageIdx={state.activeImageIdx}
+        activeRegionId={state.activeRegionId}
         activeTool={state.activeTool}
         dispatch={dispatch}
         images={state.images}

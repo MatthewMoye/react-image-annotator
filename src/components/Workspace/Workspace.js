@@ -5,6 +5,7 @@ import styles from "./Workspace.module.css";
 
 const Workspace = ({
   activeImageIdx,
+  activeRegionId,
   activeTool,
   dispatch,
   images,
@@ -111,6 +112,7 @@ const Workspace = ({
                     />
                     {img.regions && (
                       <Regions
+                        activeRegionId={activeRegionId}
                         activeTool={activeTool}
                         dispatch={dispatch}
                         events={events}

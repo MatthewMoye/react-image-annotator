@@ -1,6 +1,12 @@
+import Point from "./Point/Point";
 import styles from "./Regions.module.css";
 
+const toolRegions = {
+  point: Point,
+};
+
 const Regions = ({
+  activeRegionId,
   activeTool,
   dispatch,
   events,
@@ -24,20 +30,21 @@ const Regions = ({
       }}
       onMouseDown={handleMouseDown}
     >
-      {img.regions.map((r) => {
-        // filter by type of region
-        const xPos = r.points[0][0] * img.width + imgMargin.width;
-        const yPos = r.points[0][1] * img.height + imgMargin.height;
+      {img.regions.map((r, idx) => {
+        const RegionComponent = toolRegions[r.type];
+        if (!RegionComponent) {
+          return <div key={`unknown-type-${r.type}-${idx}`} />;
+        }
         return (
-          <g key={`${r.id}-g`} transform={`translate(${xPos} ${yPos})`}>
-            <path
-              key={`${r.id}-path`}
-              d={"M0 8L8 0L0 -8L-8 0Z"}
-              strokeWidth={2}
-              stroke={"red"}
-              fill="transparent"
-            />
-          </g>
+          <RegionComponent
+            key={`region-${r.id}`}
+            activeRegionId={activeRegionId}
+            dispatch={dispatch}
+            img={img}
+            imgMargin={imgMargin}
+            isActiveImg={isActiveImg}
+            r={r}
+          />
         );
       })}
     </svg>
