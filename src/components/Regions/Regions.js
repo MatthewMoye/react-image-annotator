@@ -1,5 +1,7 @@
+import React from "react";
 import PointHighlight from "./Point/PointHighlight";
 import PointShape from "./Point/PointShape";
+import PointTransform from "./Point/PointTransform";
 
 const regionShapes = {
   point: PointShape,
@@ -7,6 +9,10 @@ const regionShapes = {
 
 const regionHighlight = {
   point: PointHighlight,
+};
+
+const regionTransform = {
+  point: PointTransform,
 };
 
 const Regions = ({
@@ -22,14 +28,6 @@ const Regions = ({
       events.onMouseDown(e, activeTool.slice(6).toUpperCase(), "create");
     }
   };
-
-  // let activeRegion;
-  // if (activeRegionId) {
-    // activeRegion = img.regions.find((r) => r.id === activeRegionId);
-    // if (activeRegion) {
-    //   Transform = regionTransform[activeRegion.type];
-    // }
-  // }
 
   return (
     <div
@@ -64,15 +62,31 @@ const Regions = ({
         if (!Highlight) {
           return <div key={`unknown-highlight-type-${r.type}-${idx}`} />;
         }
+        let Transform;
+        if (activeRegionId === r.id) {
+          Transform = regionTransform[r.type];
+        }
         return (
-          <Highlight
-            key={`region-highlight-${r.id}`}
-            activeRegionId={activeRegionId}
-            dispatch={dispatch}
-            img={img}
-            imgMargin={imgMargin}
-            r={r}
-          />
+          <React.Fragment key={`region-select-${r.id}`}>
+            <Highlight
+              key={`region-highlight-${r.id}`}
+              activeRegionId={activeRegionId}
+              dispatch={dispatch}
+              img={img}
+              imgMargin={imgMargin}
+              r={r}
+            />
+            {Transform && (
+              <Transform
+                key={`region-transform-${r.id}`}
+                dispatch={dispatch}
+                events={events}
+                img={img}
+                imgMargin={imgMargin}
+                r={r}
+              />
+            )}
+          </React.Fragment>
         );
       })}
     </div>

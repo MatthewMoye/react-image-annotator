@@ -1,35 +1,27 @@
-import { useState } from "react";
+import styles from "./Point.module.css";
 
 const PointHighlight = ({ activeRegionId, dispatch, img, imgMargin, r }) => {
-  const [isHovering, setIsHovering] = useState(false);
+  const xPos = r.points[0][0] * img.width + imgMargin.width;
+  const yPos = r.points[0][1] * img.height + imgMargin.height;
   const isActive = activeRegionId === r.id;
 
   const handleRegionSelect = (e) => {
-    dispatch({ type: "SELECT_REGION", regionId: r.id });
+    if (e.button === 0 && !isActive) {
+      dispatch({ type: "SELECT_REGION", regionId: r.id });
+    }
     e.stopPropagation();
   };
 
-  const toggleHover = () => {
-    setIsHovering(!isHovering);
-  };
-
-  const xPos = r.points[0][0] * img.width + imgMargin.width;
-  const yPos = r.points[0][1] * img.height + imgMargin.height;
-
   return (
     <div
+      className={styles[`highlightBox${isActive ? "Active" : ""}`]}
       style={{
-        position: "absolute",
         top: yPos - 14,
         left: xPos - 14,
         width: "27px",
         height: "27px",
-        outline: isActive || isHovering ? "2px dotted white" : null,
-        "&hover": { outline: "2px dotted white" },
       }}
       onMouseDown={handleRegionSelect}
-      onMouseEnter={toggleHover}
-      onMouseLeave={toggleHover}
     />
   );
 };

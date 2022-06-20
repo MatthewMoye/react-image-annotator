@@ -1,0 +1,12 @@
+.highlightBox {
+  position: absolute;
+}
+
+.highlightBoxActive {
+  position: absolute;
+  outline: 2px dotted white;
+}
+
+.highlightBox:hover {
+  outline: 2px dotted white;
+}

@@ -80,7 +80,7 @@ const useEvents = (
         dispatch({ type: "PAN", toggle: true });
         panStartRef.current = { x: e.pageX, y: e.pageY };
       } else if (startMoveImage) {
-        dispatch({ type: "MOVE_IMAGE", toggle: true });
+        dispatch({ type: "IMAGE", event: "MOVE", toggle: true });
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
       }
       if (type) {
@@ -92,7 +92,7 @@ const useEvents = (
           y: mousePosRef.current.y,
         });
         e.stopPropagation();
-      } else if (e.button !== 2 && !startMoveImage && activeTool !== "pan") {
+      } else if (e.button === 0 && !startMoveImage && activeTool !== "pan") {
         dispatch({
           type: "UNSELECT",
           event: "MOUSE_DOWN",
@@ -105,7 +105,7 @@ const useEvents = (
         dispatch({ type: "PAN", toggle: false });
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
       } else if (e.button === 0) {
-        dispatch({ type: "MOVE_IMAGE", toggle: false });
+        dispatch({ type: "IMAGE", event: "MOVE", toggle: false });
       }
       if (type) {
         dispatch({

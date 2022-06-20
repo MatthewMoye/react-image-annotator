@@ -1,4 +1,5 @@
-import pointTool from "./point-tool";
+import imageEvents from "./image-events";
+import pointEvents from "./point-events";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -26,39 +27,10 @@ const reducer = (state, action) => {
       return state;
     }
     case "POINT": {
-      return pointTool(state, action);
+      return pointEvents(state, action);
     }
-    case "MOVE_IMAGE": {
-      return { ...state, isMovingImg: action.toggle };
-    }
-    case "ROTATE_IMAGE": {
-      return {
-        ...state,
-        images: state.images.map((img, imgIdx) => {
-          return imgIdx === state.activeImageIdx
-            ? { ...img, angle: ((img.angle ? img.angle : 0) + 30) % 360 }
-            : img;
-        }),
-      };
-    }
-    case "LOAD_IMAGE": {
-      return {
-        ...state,
-        images: state.images.map((img) =>
-          img.id !== action.id
-            ? img
-            : {
-                ...img,
-                angle: 0,
-                width: action.w,
-                height: action.h,
-                regions: action.regions ? action.regions : [],
-              }
-        ),
-      };
-    }
-    case "SET_ACTIVE_IMAGE": {
-      return { ...state, activeTool: "select", activeImageIdx: action.idx };
+    case "IMAGE": {
+      return imageEvents(state, action);
     }
     case "STOP_ALL_ACTIONS": {
       return { ...state, isPanning: false, isMovingImg: false };

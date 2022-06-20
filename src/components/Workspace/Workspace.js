@@ -29,10 +29,11 @@ const Workspace = ({
     zoomLvl
   );
 
-  const onImgLoad = (e, regions) => {
+  const onImgLoad = (e, regions, imgIdx) => {
     dispatch({
-      type: "LOAD_IMAGE",
-      id: e.target.id,
+      type: "IMAGE",
+      event: "LOAD",
+      idx: imgIdx,
       w: e.target.naturalWidth,
       h: e.target.naturalHeight,
       regions: regions,
@@ -42,9 +43,9 @@ const Workspace = ({
   const handleImgMouseDown = (e, idx) => {
     if (e.button !== 0) return;
     if (activeTool === "selectImage") {
-      dispatch({ type: "SET_ACTIVE_IMAGE", idx: idx });
+      dispatch({ type: "IMAGE", event: "SET_ACTIVE", idx: idx });
     } else if (activeTool === "rotate" && activeImageIdx === idx) {
-      dispatch({ type: "ROTATE_IMAGE" });
+      dispatch({ type: "IMAGE", event: "ROTATE" });
     } else if (activeTool === "moveImage" && activeImageIdx === idx) {
       events.onMouseDown(e, null, null, true);
     }
@@ -103,7 +104,7 @@ const Workspace = ({
                       id={img.id}
                       src={img.src}
                       alt={img.alt}
-                      onLoad={(e) => onImgLoad(e, img.regions)}
+                      onLoad={(e) => onImgLoad(e, img.regions, imgIdx)}
                       style={{
                         width: `${img.width}px`,
                         height: `${img.height}px`,

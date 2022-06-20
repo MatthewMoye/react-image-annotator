@@ -11,6 +11,7 @@ const Annotator = ({ images }) => {
     images: images,
     isPanning: false,
     isMovingImg: false,
+    mode: {},
     zoomLvl: 1,
   });
 
