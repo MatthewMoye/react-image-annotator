@@ -64,13 +64,15 @@ const useEvents = (
         );
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
       }
-      dispatch({
-        type: type,
-        operation: operation,
-        event: "MOUSE_MOVE",
-        x: mousePosRef.current.x,
-        y: mousePosRef.current.y,
-      });
+      if (type) {
+        dispatch({
+          type: type,
+          operation: operation,
+          event: "MOUSE_MOVE",
+          x: mousePosRef.current.x,
+          y: mousePosRef.current.y,
+        });
+      }
     },
     onMouseDown: (e, type, operation, startMoveImage) => {
       mousePosRef.current = getMousePosition(e);
@@ -88,6 +90,12 @@ const useEvents = (
           event: "MOUSE_DOWN",
           x: mousePosRef.current.x,
           y: mousePosRef.current.y,
+        });
+        e.stopPropagation();
+      } else if (e.button !== 2 && !startMoveImage && activeTool !== "pan") {
+        dispatch({
+          type: "UNSELECT",
+          event: "MOUSE_DOWN",
         });
       }
     },

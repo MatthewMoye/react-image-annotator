@@ -118,7 +118,6 @@ const Workspace = ({
                         events={events}
                         img={img}
                         imgMargin={imgMargin}
-                        isActiveImg={isActiveImg}
                       />
                     )}
                   </div>

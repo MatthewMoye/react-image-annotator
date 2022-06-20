@@ -13,6 +13,7 @@ const pointTool = (state, action) => {
         };
         return {
           ...state,
+          activeRegionId: newRegion.id,
           images: state.images.map((img, imgIdx) => {
             return imgIdx === state.activeImageIdx
               ? { ...img, regions: [...img.regions, newRegion] }
