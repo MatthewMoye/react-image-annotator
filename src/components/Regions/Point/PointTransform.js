@@ -1,12 +1,21 @@
-const PointTransform = ({ events, img, imgMargin, r }) => {
+const PointTransform = ({ activeRegionType, events, img, imgMargin, r }) => {
   const xPos = r.points[0][0] * img.width + imgMargin.width;
   const yPos = r.points[0][1] * img.height + imgMargin.height;
 
   const startTransform = (e) => {
-    e.stopPropagation();
     if (e.button === 0) {
-      events.onMouseDown(e, "POINT", "START_MOVE");
+      events.onMouseDown(e, null, "START_MOVE");
     }
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const stopTransform = (e) => {
+    if (e.button === 0) {
+      events.onMouseDown(e);
+    }
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   return (
@@ -19,6 +28,7 @@ const PointTransform = ({ events, img, imgMargin, r }) => {
         height: "27px",
       }}
       onMouseDown={startTransform}
+      onMouseUp={stopTransform}
     />
   );
 };

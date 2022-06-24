@@ -7,10 +7,14 @@ const reducer = (state, action) => {
       return { ...state, activeTool: action.tool };
     }
     case "SELECT_REGION": {
-      return { ...state, activeRegionId: action.regionId };
+      return {
+        ...state,
+        activeRegionId: action.regionId,
+        activeRegionType: action.regionType,
+      };
     }
     case "UNSELECT": {
-      return { ...state, activeRegionId: null };
+      return { ...state, activeRegionId: null, activeRegionType: null };
     }
     case "PAN": {
       return { ...state, isPanning: action.toggle };

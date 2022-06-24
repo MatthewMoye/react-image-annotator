@@ -17,6 +17,7 @@ const regionTransform = {
 
 const Regions = ({
   activeRegionId,
+  activeRegionType,
   activeTool,
   dispatch,
   events,
@@ -79,6 +80,7 @@ const Regions = ({
             {Transform && (
               <Transform
                 key={`region-transform-${r.id}`}
+                activeRegionType={activeRegionType}
                 dispatch={dispatch}
                 events={events}
                 img={img}

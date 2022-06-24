@@ -6,6 +6,7 @@ import styles from "./Workspace.module.css";
 const Workspace = ({
   activeImageIdx,
   activeRegionId,
+  activeRegionType,
   activeTool,
   dispatch,
   images,
@@ -21,6 +22,7 @@ const Workspace = ({
   const [mousePositionRef, events] = useEvents(
     activeImageAngle,
     activeImageRef,
+    activeRegionType,
     activeTool,
     dispatch,
     imageContainerRef,
@@ -114,6 +116,7 @@ const Workspace = ({
                     {img.regions && (
                       <Regions
                         activeRegionId={activeRegionId}
+                        activeRegionType={activeRegionType}
                         activeTool={activeTool}
                         dispatch={dispatch}
                         events={events}

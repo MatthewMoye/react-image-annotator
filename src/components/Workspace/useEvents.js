@@ -3,6 +3,7 @@ import { useRef } from "react";
 const useEvents = (
   activeImageAngle,
   activeImageRef,
+  activeRegionType,
   activeTool,
   dispatch,
   imageContainerRef,
@@ -63,10 +64,11 @@ const useEvents = (
           mvImageStartRef
         );
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
+        return;
       }
-      if (type) {
+      if (activeRegionType) {
         dispatch({
-          type: type,
+          type: activeRegionType.toUpperCase(),
           operation: operation,
           event: "MOUSE_MOVE",
           x: mousePosRef.current.x,
@@ -75,6 +77,7 @@ const useEvents = (
       }
     },
     onMouseDown: (e, type, operation, startMoveImage) => {
+      e.preventDefault();
       mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
         dispatch({ type: "PAN", toggle: true });
@@ -82,10 +85,11 @@ const useEvents = (
       } else if (startMoveImage) {
         dispatch({ type: "IMAGE", event: "MOVE", toggle: true });
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
+        return;
       }
-      if (type) {
+      if ((activeRegionType && operation) || type) {
         dispatch({
-          type: type,
+          type: type ? type : activeRegionType.toUpperCase(),
           operation: operation,
           event: "MOUSE_DOWN",
           x: mousePosRef.current.x,
@@ -100,16 +104,18 @@ const useEvents = (
       }
     },
     onMouseUp: (e, type, operation) => {
+      e.preventDefault();
       mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
         dispatch({ type: "PAN", toggle: false });
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
       } else if (e.button === 0) {
         dispatch({ type: "IMAGE", event: "MOVE", toggle: false });
+        return;
       }
-      if (type) {
+      if (activeRegionType) {
         dispatch({
-          type: type,
+          type: activeRegionType.toUpperCase(),
           operation: operation,
           event: "MOUSE_UP",
           x: mousePosRef.current.x,
@@ -118,10 +124,12 @@ const useEvents = (
       }
     },
     onMouseLeave: (e) => {
+      e.preventDefault();
       mousePosRef.current = getMousePosition(e);
       dispatch({ type: "STOP_ALL_ACTIONS" });
     },
     onWheel: (e) => {
+      e.preventDefault();
       const direction = e.deltaY < 0 ? 1 : e.deltaY > 0 ? -1 : 0;
       dispatch({
         type: "ZOOM",

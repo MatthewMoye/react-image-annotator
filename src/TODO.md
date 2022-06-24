@@ -8,3 +8,6 @@
 - keep track of angle on all regions so it stays the way it was placed if img was rotated
 
 # Bugs
+
+- double point creation on mouse down
+- div highlight box drags away from shape on mouseDown
