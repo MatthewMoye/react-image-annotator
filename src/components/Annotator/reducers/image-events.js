@@ -1,27 +1,28 @@
+import { getIn, merge, set, setIn } from "seamless-immutable";
+
 const imageEvents = (state, action) => {
+  const activeImgPath = ["images", state.activeImageIdx];
+  
   switch (action.event) {
     case "MOVE": {
-      return { ...state, isMovingImg: action.toggle };
+      return set(state, "isMovingImg", action.toggle);
     }
     case "ROTATE": {
-      let images = [...state.images];
-      images[state.activeImageIdx].angle =
-        (images[state.activeImageIdx].angle + 30) % 360;
-      return { ...state, images: images };
+      const angle = getIn(state, [...activeImgPath, "angle"], 0);
+      return setIn(state, [...activeImgPath, "angle"], (angle + 30) % 360);
     }
     case "LOAD": {
-      let images = [...state.images];
-      images[action.idx] = {
-        ...images[action.idx],
+      const imgPath = ["images", action.idx];
+      const image = merge(getIn(state, imgPath), {
         angle: 0,
         width: action.w,
         height: action.h,
         regions: action.regions ? action.regions : [],
-      };
-      return { ...state, images: images };
+      });
+      return setIn(state, imgPath, image);
     }
     case "SET_ACTIVE": {
-      return { ...state, activeTool: "select", activeImageIdx: action.idx };
+      return merge(state, { activeTool: "select", activeImageIdx: action.idx });
     }
     default: {
       return state;

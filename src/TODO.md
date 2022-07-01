@@ -9,5 +9,5 @@
 
 # Bugs
 
-- double point creation on mouse down
+- Fix point movement
 - div highlight box drags away from shape on mouseDown

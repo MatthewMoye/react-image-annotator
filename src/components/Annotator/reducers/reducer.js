@@ -1,34 +1,28 @@
+import { merge, set } from "seamless-immutable";
 import imageEvents from "./image-events";
 import pointEvents from "./point-events";
 
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_TOOL": {
-      return { ...state, activeTool: action.tool };
+      return set(state, "activeTool", action.tool);
     }
     case "SELECT_REGION": {
-      return {
-        ...state,
+      return merge(state, {
         activeRegionId: action.regionId,
         activeRegionType: action.regionType,
-      };
+      });
     }
     case "UNSELECT": {
-      return { ...state, activeRegionId: null, activeRegionType: null };
+      return merge(state, { activeRegionId: null, activeRegionType: null });
     }
     case "PAN": {
-      return { ...state, isPanning: action.toggle };
+      return set(state, "isPanning", action.toggle);
     }
     case "ZOOM": {
-      const zoomPercent =
-        action.direction * (state.zoomLvl < 2 ? 0.1 : 0.1 * state.zoomLvl);
-      return {
-        ...state,
-        zoomLvl: Math.max(Math.min(state.zoomLvl + zoomPercent, 20), 0.5),
-      };
-    }
-    case "BOX": {
-      return state;
+      const zoom = state.zoomLvl;
+      const zoomAdd = action.direction * (zoom < 2 ? 0.1 : 0.1 * zoom);
+      return set(state, "zoomLvl", Math.max(Math.min(zoom + zoomAdd, 20), 0.5));
     }
     case "POINT": {
       return pointEvents(state, action);
@@ -37,7 +31,7 @@ const reducer = (state, action) => {
       return imageEvents(state, action);
     }
     case "STOP_ALL_ACTIONS": {
-      return { ...state, isPanning: false, isMovingImg: false };
+      return merge(state, { isPanning: false, isMovingImg: false });
     }
     default: {
       return state;
