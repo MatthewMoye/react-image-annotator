@@ -45,6 +45,7 @@ const Workspace = ({
   };
 
   const handleImgMouseDown = (e, idx) => {
+    e.preventDefault();
     if (e.button !== 0) return;
     if (activeTool === "selectImage") {
       dispatch({ type: "IMAGE", event: "SET_ACTIVE", idx: idx });
@@ -52,7 +53,7 @@ const Workspace = ({
       dispatch({ type: "IMAGE", event: "ROTATE" });
     } else if (activeTool === "moveImage" && activeImageIdx === idx) {
       e.stopPropagation();
-      events.onMouseDown(e, null, null, true);
+      events.onMouseDown(e, null, "MOVE_IMAGE");
     }
   };
 

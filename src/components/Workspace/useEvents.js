@@ -77,14 +77,14 @@ const useEvents = (
         });
       }
     },
-    onMouseDown: (e, type, operation, startMoveImage) => {
+    onMouseDown: (e, type, operation) => {
       e.stopPropagation();
       mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
         dispatch({ type: "PAN", toggle: true });
         panStartRef.current = { x: e.pageX, y: e.pageY };
         return;
-      } else if (startMoveImage && activeTool === "moveImage") {
+      } else if (operation === "MOVE_IMAGE" && activeTool === "moveImage") {
         dispatch({ type: "IMAGE", event: "MOVE", toggle: true });
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
         return;
@@ -97,11 +97,7 @@ const useEvents = (
           x: mousePosRef.current.x,
           y: mousePosRef.current.y,
         });
-      } else if (
-        e.button === 0 &&
-        !startMoveImage &&
-        mode?.mode === undefined
-      ) {
+      } else if (e.button === 0 && mode?.mode === undefined) {
         dispatch({
           type: "UNSELECT",
           event: "MOUSE_DOWN",
