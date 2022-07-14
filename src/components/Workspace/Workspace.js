@@ -12,6 +12,7 @@ const Workspace = ({
   images,
   isPanning,
   isMovingImg,
+  mode,
   zoomLvl,
 }) => {
   const activeImageAngle = images[activeImageIdx]?.angle;
@@ -28,6 +29,7 @@ const Workspace = ({
     imageContainerRef,
     isMovingImg,
     isPanning,
+    mode,
     zoomLvl
   );
 
@@ -49,6 +51,7 @@ const Workspace = ({
     } else if (activeTool === "rotate" && activeImageIdx === idx) {
       dispatch({ type: "IMAGE", event: "ROTATE" });
     } else if (activeTool === "moveImage" && activeImageIdx === idx) {
+      e.stopPropagation();
       events.onMouseDown(e, null, null, true);
     }
   };

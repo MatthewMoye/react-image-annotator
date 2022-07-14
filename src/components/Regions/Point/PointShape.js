@@ -1,16 +1,13 @@
-const PointShape = ({ img, imgMargin, r }) => {
+import { memo } from "react";
+
+const PointShape = memo(({ img, imgMargin, r }) => {
   const xPos = r.points[0][0] * img.width + imgMargin.width;
   const yPos = r.points[0][1] * img.height + imgMargin.height;
   return (
     <g transform={`translate(${xPos} ${yPos})`} width={"200px"}>
-      <circle
-        stroke={"red"}
-        strokeWidth={2}
-        fill={"#d7000050"}
-        r={"8"}
-      />
+      <circle stroke={"red"} strokeWidth={2} fill={"#d7000050"} r={"8"} />
     </g>
   );
-};
+});
 
 export default PointShape;

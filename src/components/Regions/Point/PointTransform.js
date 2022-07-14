@@ -3,19 +3,18 @@ const PointTransform = ({ activeRegionType, events, img, imgMargin, r }) => {
   const yPos = r.points[0][1] * img.height + imgMargin.height;
 
   const startTransform = (e) => {
+    e.preventDefault();
     if (e.button === 0) {
+      e.stopPropagation();
       events.onMouseDown(e, null, "START_MOVE");
     }
-    e.preventDefault();
-    e.stopPropagation();
   };
 
   const stopTransform = (e) => {
     if (e.button === 0) {
-      events.onMouseDown(e);
+      e.stopPropagation();
+      events.onMouseUp(e, "STOP_MOVE");
     }
-    e.preventDefault();
-    e.stopPropagation();
   };
 
   return (

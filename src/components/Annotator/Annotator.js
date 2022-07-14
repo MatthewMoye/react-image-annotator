@@ -31,6 +31,7 @@ const Annotator = ({ images }) => {
         images={state.images}
         isMovingImg={state.isMovingImg}
         isPanning={state.isPanning}
+        mode={state.mode}
         zoomLvl={state.zoomLvl}
       />
       <Toolbar dispatch={dispatch} activeTool={state.activeTool} />

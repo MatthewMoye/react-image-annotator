@@ -9,6 +9,7 @@ const useEvents = (
   imageContainerRef,
   isMovingImg,
   isPanning,
+  mode,
   zoomLvl
 ) => {
   const mousePosRef = useRef({ x: 0, y: 0 });
@@ -48,7 +49,8 @@ const useEvents = (
   };
 
   const events = {
-    onMouseMove: (e, type, operation) => {
+    onMouseMove: (e) => {
+      e.stopPropagation();
       mousePosRef.current = getMousePosition(e);
       if (isPanning) {
         updateRefPosition(
@@ -69,7 +71,6 @@ const useEvents = (
       if (activeRegionType) {
         dispatch({
           type: activeRegionType.toUpperCase(),
-          operation: operation,
           event: "MOUSE_MOVE",
           x: mousePosRef.current.x,
           y: mousePosRef.current.y,
@@ -77,12 +78,13 @@ const useEvents = (
       }
     },
     onMouseDown: (e, type, operation, startMoveImage) => {
-      e.preventDefault();
+      e.stopPropagation();
       mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
         dispatch({ type: "PAN", toggle: true });
         panStartRef.current = { x: e.pageX, y: e.pageY };
-      } else if (startMoveImage) {
+        return;
+      } else if (startMoveImage && activeTool === "moveImage") {
         dispatch({ type: "IMAGE", event: "MOVE", toggle: true });
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
         return;
@@ -95,25 +97,28 @@ const useEvents = (
           x: mousePosRef.current.x,
           y: mousePosRef.current.y,
         });
-        e.stopPropagation();
-      } else if (e.button === 0 && !startMoveImage && activeTool !== "pan") {
+      } else if (
+        e.button === 0 &&
+        !startMoveImage &&
+        mode?.mode === undefined
+      ) {
         dispatch({
           type: "UNSELECT",
           event: "MOUSE_DOWN",
         });
       }
     },
-    onMouseUp: (e, type, operation) => {
-      e.preventDefault();
+    onMouseUp: (e, operation) => {
+      e.stopPropagation();
       mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
         dispatch({ type: "PAN", toggle: false });
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
-      } else if (e.button === 0) {
+      } else if (e.button === 0 && activeTool === "moveImage") {
         dispatch({ type: "IMAGE", event: "MOVE", toggle: false });
         return;
       }
-      if (activeRegionType) {
+      if (activeRegionType && operation) {
         dispatch({
           type: activeRegionType.toUpperCase(),
           operation: operation,
@@ -124,12 +129,11 @@ const useEvents = (
       }
     },
     onMouseLeave: (e) => {
-      e.preventDefault();
       mousePosRef.current = getMousePosition(e);
       dispatch({ type: "STOP_ALL_ACTIONS" });
     },
     onWheel: (e) => {
-      e.preventDefault();
+      e.stopPropagation();
       const direction = e.deltaY < 0 ? 1 : e.deltaY > 0 ? -1 : 0;
       dispatch({
         type: "ZOOM",

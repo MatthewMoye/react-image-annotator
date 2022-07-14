@@ -6,7 +6,7 @@ const pointEvents = (state, action) => {
   const activeRegionIdx = regions.findIndex(
     (r) => r.id === state.activeRegionId
   );
-  
+
   switch (action.event) {
     case "MOUSE_MOVE": {
       if (state.mode?.mode === "MOVE_POINT") {
@@ -19,9 +19,6 @@ const pointEvents = (state, action) => {
       return state;
     }
     case "MOUSE_DOWN": {
-      if (state.mode?.mode) {
-        return state;
-      }
       if (action.operation === "START_MOVE") {
         return set(state, "mode", { mode: "MOVE_POINT" });
       }
@@ -30,18 +27,16 @@ const pointEvents = (state, action) => {
         type: "point",
         points: [[action.x, action.y]],
       };
-      state = setIn(
-        state,
-        [...activeImgPath, "regions", regions.length],
-        newRegion
+      return merge(
+        setIn(state, [...activeImgPath, "regions", regions.length], newRegion),
+        {
+          activeRegionId: newRegion.id,
+          activeRegionType: newRegion.type,
+        }
       );
-      return merge(state, {
-        activeRegionId: newRegion.id,
-        activeRegionType: newRegion.type,
-      });
     }
     case "MOUSE_UP": {
-      if (state.mode?.mode === "MOVE_POINT") {
+      if (action.operation === "STOP_MOVE") {
         return set(state, "mode", {});
       }
       return state;

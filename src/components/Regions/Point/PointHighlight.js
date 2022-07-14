@@ -6,10 +6,11 @@ const PointHighlight = ({ activeRegionId, dispatch, img, imgMargin, r }) => {
   const isActive = activeRegionId === r.id;
 
   const handleRegionSelect = (e) => {
+    e.preventDefault();
     if (e.button === 0 && !isActive) {
+      e.stopPropagation()
       dispatch({ type: "SELECT_REGION", regionId: r.id, regionType: r.type });
     }
-    e.stopPropagation();
   };
 
   return (
