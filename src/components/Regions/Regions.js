@@ -1,18 +1,17 @@
 import React from "react";
-import PointHighlight from "./Point/PointHighlight";
+import BoxHighlightAndTransform from "./Box/BoxHighlightAndTransform";
+import BoxShape from "./Box/BoxShape";
+import PointHighlightAndTransform from "./Point/PointHighlightAndTransform";
 import PointShape from "./Point/PointShape";
-import PointTransform from "./Point/PointTransform";
 
 const regionShapes = {
   point: PointShape,
+  box: BoxShape,
 };
 
-const regionHighlight = {
-  point: PointHighlight,
-};
-
-const regionTransform = {
-  point: PointTransform,
+const regionHighlightAndTransform = {
+  point: PointHighlightAndTransform,
+  box: BoxHighlightAndTransform,
 };
 
 const Regions = ({
@@ -42,11 +41,8 @@ const Regions = ({
         style={{ width: "100%", height: "100%" }}
         onMouseDown={handleMouseDown}
       >
-        {img.regions.map((r, idx) => {
+        {img.regions.map((r) => {
           const Shape = regionShapes[r.type];
-          if (!Shape) {
-            return <div key={`unknown-shape-type-${r.type}-${idx}`} />;
-          }
           return (
             <Shape
               key={`region-${r.id}`}
@@ -57,38 +53,24 @@ const Regions = ({
           );
         })}
       </svg>
-      {img.regions.map((r, idx) => {
-        const Highlight = regionHighlight[r.type];
-        if (!Highlight) {
-          return <div key={`unknown-highlight-type-${r.type}-${idx}`} />;
-        }
-        let Transform;
-        if (activeRegionId === r.id) {
-          Transform = regionTransform[r.type];
-        }
-        return (
-          <React.Fragment key={`region-select-${r.id}`}>
-            <Highlight
-              key={`region-highlight-${r.id}`}
-              activeRegionId={activeRegionId}
-              dispatch={dispatch}
-              img={img}
-              imgMargin={imgMargin}
-              r={r}
-            />
-            {Transform && (
-              <Transform
-                key={`region-transform-${r.id}`}
+      {img.width &&
+        img.height &&
+        img.regions.map((r) => {
+          const HighlightAndTransform = regionHighlightAndTransform[r.type];
+          return (
+            <React.Fragment key={`region-select-${r.id}`}>
+              <HighlightAndTransform
+                key={`region-highlight-transform-${r.id}`}
+                activeRegionId={activeRegionId}
                 dispatch={dispatch}
                 events={events}
                 img={img}
                 imgMargin={imgMargin}
                 r={r}
               />
-            )}
-          </React.Fragment>
-        );
-      })}
+            </React.Fragment>
+          );
+        })}
     </div>
   );
 };

@@ -64,7 +64,7 @@ const Workspace = ({
       type: "DEFAULT_ZOOM",
       zoomLvl: Math.min(
         window.innerWidth / totalImageSize.width,
-        window.innerHeight/ totalImageSize.height
+        window.innerHeight / totalImageSize.height
       ),
     });
   }, [dispatch, totalImageSize]);
@@ -130,7 +130,7 @@ const Workspace = ({
                       }}
                       className={styles.img}
                     />
-                    {img.regions && (
+                    {workspaceLoaded && img.regions && (
                       <Regions
                         activeRegionId={activeRegionId}
                         activeRegionType={activeRegionType}
