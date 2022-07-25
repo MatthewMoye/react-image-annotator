@@ -16,6 +16,8 @@ const Annotator = ({ images }) => {
       isPanning: false,
       isMovingImg: false,
       mode: {},
+      totalImageSize: { width: 0, height: 0 },
+      workspaceLoaded: false,
       zoomLvl: 1,
     })
   );
@@ -32,6 +34,8 @@ const Annotator = ({ images }) => {
         isMovingImg={state.isMovingImg}
         isPanning={state.isPanning}
         mode={state.mode}
+        totalImageSize={state.totalImageSize}
+        workspaceLoaded={state.workspaceLoaded}
         zoomLvl={state.zoomLvl}
       />
       <Toolbar dispatch={dispatch} activeTool={state.activeTool} />

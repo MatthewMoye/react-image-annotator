@@ -24,6 +24,10 @@ const reducer = (state, action) => {
       const zoomAdd = action.direction * (zoom < 2 ? 0.1 : 0.1 * zoom);
       return set(state, "zoomLvl", Math.max(Math.min(zoom + zoomAdd, 20), 0.5));
     }
+    case "DEFAULT_ZOOM": {
+      state = set(state, "workspaceLoaded", true);
+      return set(state, "zoomLvl", action.zoomLvl);
+    }
     case "POINT": {
       return pointEvents(state, action);
     }

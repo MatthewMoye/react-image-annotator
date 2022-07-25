@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Regions from "../Regions/Regions";
 import useEvents from "./useEvents";
 import styles from "./Workspace.module.css";
@@ -13,6 +13,8 @@ const Workspace = ({
   isPanning,
   isMovingImg,
   mode,
+  totalImageSize,
+  workspaceLoaded,
   zoomLvl,
 }) => {
   const activeImageAngle = images[activeImageIdx]?.angle;
@@ -57,6 +59,16 @@ const Workspace = ({
     }
   };
 
+  useEffect(() => {
+    dispatch({
+      type: "DEFAULT_ZOOM",
+      zoomLvl: Math.min(
+        window.innerWidth / totalImageSize.width,
+        window.innerHeight/ totalImageSize.height
+      ),
+    });
+  }, [dispatch, totalImageSize]);
+
   return (
     <div className={styles.workspaceContainer} {...events}>
       <div
@@ -79,6 +91,7 @@ const Workspace = ({
                 key={`img-container-${img.id}`}
                 className={styles.imgContainer}
                 style={{
+                  display: workspaceLoaded ? "flex" : "none",
                   minWidth: `${Math.max(img.width, img.height)}px`,
                   minHeight: `${Math.max(img.width, img.height)}px`,
                   margin: `${imgMargin.height}px ${imgMargin.width}px`,

@@ -2,7 +2,7 @@ import { getIn, merge, set, setIn } from "seamless-immutable";
 
 const imageEvents = (state, action) => {
   const activeImgPath = ["images", state.activeImageIdx];
-  
+
   switch (action.event) {
     case "MOVE": {
       return set(state, "isMovingImg", action.toggle);
@@ -18,6 +18,12 @@ const imageEvents = (state, action) => {
         width: action.w,
         height: action.h,
         regions: action.regions ? action.regions : [],
+      });
+      state = merge(state, {
+        totalImageSize: {
+          width: state.totalImageSize.width + action.w,
+          height: state.totalImageSize.height + action.h,
+        },
       });
       return setIn(state, imgPath, image);
     }
