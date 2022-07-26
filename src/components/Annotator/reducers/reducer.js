@@ -1,4 +1,5 @@
 import { merge, set } from "seamless-immutable";
+import boxEvents from "./box-events";
 import imageEvents from "./image-events";
 import pointEvents from "./point-events";
 
@@ -27,6 +28,9 @@ const reducer = (state, action) => {
     case "DEFAULT_ZOOM": {
       state = set(state, "workspaceLoaded", true);
       return set(state, "zoomLvl", action.zoomLvl);
+    }
+    case "BOX": {
+      return boxEvents(state, action);
     }
     case "POINT": {
       return pointEvents(state, action);

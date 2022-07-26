@@ -2,7 +2,6 @@
 
 - Unit tests
 - Implement tools
-    - box
     - polygon
     - line
 - Create annotation box to label cls, comment, and do tags <- make sure that image rotation is not applied to this

@@ -28,7 +28,7 @@ const BoxHighlightAndTransform = ({
     e.preventDefault();
     if (e.button === 0) {
       e.stopPropagation();
-      if (!isActive) {
+      if (isActive) {
         dispatch({ type: "BOX", event: "START_TRANSFORM", point: point });
       }
     }
@@ -50,8 +50,8 @@ const BoxHighlightAndTransform = ({
     <div
       className={styles[`highlightBox${isActive ? "Active" : ""}`]}
       style={{
-        top: pointList[0][1] - 4,
-        left: pointList[0][0] - 4,
+        top: Math.min(...pointList.map((p) => p[1])) - 4,
+        left: Math.min(...pointList.map((p) => p[0])) - 4,
         width: lineDistance(pointList[0], pointList[1]) + 8,
         height: lineDistance(pointList[0], pointList[3]) + 8,
       }}
