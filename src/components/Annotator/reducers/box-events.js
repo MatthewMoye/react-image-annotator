@@ -12,25 +12,33 @@ const boxEvents = (state, action) => {
       return set(state, "mode", { mode: "BOX_TRANSFORM", point: action.point });
     }
     case "MOUSE_MOVE": {
-      const points = regions[activeRegionIdx]?.points;
+      const points = [...regions[activeRegionIdx]?.points];
       if (state.mode?.mode === "BOX_TRANSFORM") {
-        if (state.mode.point < 4) {
+        const activeIdx = state.mode.point;
+        if (activeIdx < 4) {
           return setIn(
             state,
             [...activeImgPath, "regions", activeRegionIdx, "points"],
             points.map((p, idx) => {
-              if (idx === state.mode.point) {
+              if (idx === activeIdx) {
                 return [action.x, action.y];
-              } else if (idx === (state.mode.point + 1) % 4) {
-                return [
-                  [0, 2].includes(idx) ? action.x : p[0],
-                  [1, 3].includes(idx) ? action.y : p[1],
-                ];
-              } else if (idx === (state.mode.point + 3) % 4) {
-                return [
-                  [1, 3].includes(idx) ? action.x : p[0],
-                  [0, 2].includes(idx) ? action.y : p[1],
-                ];
+              } else if (idx !== (activeIdx + 2) % 4) {
+                const xCheck = points[activeIdx][0] === p[0];
+                return [xCheck ? action.x : p[0], !xCheck ? action.y : p[1]];
+              } else {
+                return p;
+              }
+            })
+          );
+        } else if (activeIdx < 8) {
+          return setIn(
+            state,
+            [...activeImgPath, "regions", activeRegionIdx, "points"],
+            points.map((p, idx) => {
+              const xCheck =
+                points[activeIdx % 4][0] === points[(activeIdx + 1) % 4][0];
+              if (idx === activeIdx % 4 || idx === (activeIdx + 1) % 4) {
+                return [xCheck ? action.x : p[0], !xCheck ? action.y : p[1]];
               } else {
                 return p;
               }
@@ -42,7 +50,7 @@ const boxEvents = (state, action) => {
           return setIn(
             state,
             [...activeImgPath, "regions", activeRegionIdx, "points"],
-            points.map((p, idx) => [p[0] + updateX, p[1] + updateY])
+            points.map((p) => [p[0] + updateX, p[1] + updateY])
           );
         }
       } else if (state.mode?.mode === "CREATE_BOX") {

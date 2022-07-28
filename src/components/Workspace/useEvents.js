@@ -114,7 +114,7 @@ const useEvents = (
         dispatch({ type: "IMAGE", event: "MOVE", toggle: false });
         return;
       }
-      if (activeRegionType && operation) {
+      if (activeRegionType) {
         dispatch({
           type: activeRegionType.toUpperCase(),
           operation: operation,
