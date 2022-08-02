@@ -7,6 +7,7 @@ const BoxHighlightAndTransform = ({
   img,
   imgMargin,
   r,
+  zoomLvl,
 }) => {
   const pointList = r.points.map((p) => [
     p[0] * img.width + imgMargin.width,
@@ -54,7 +55,7 @@ const BoxHighlightAndTransform = ({
     lineMidpoint2D(pointList[1], pointList[2]),
     lineMidpoint2D(pointList[2], pointList[3]),
     lineMidpoint2D(pointList[3], pointList[0]),
-    lineMidpoint2D(pointList[0], pointList[2]), 
+    lineMidpoint2D(pointList[0], pointList[2]),
   ];
 
   return (
@@ -80,6 +81,9 @@ const BoxHighlightAndTransform = ({
               width: idx < 4 ? 6 : 3,
               height: idx < 4 ? 6 : 3,
               border: "2px solid white",
+              transform: `scale(${1 / Math.min(zoomLvl / 1.5, 1)})`,
+              msTransform: `scale(${1 / Math.min(zoomLvl / 1.5, 1)})`,
+              WebkitTransform: `scale(${1 / Math.min(zoomLvl / 1.5, 1)})`,
             }}
             onMouseDown={(e) => startTransform(e, idx)}
             onMouseUp={(e) => stopTransform(e, idx)}

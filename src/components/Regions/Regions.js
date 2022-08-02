@@ -21,6 +21,7 @@ const Regions = ({
   events,
   img,
   imgMargin,
+  zoomLvl,
 }) => {
   const handleMouseDown = (e) => {
     if (e.button === 0 && activeTool.includes("create")) {
@@ -67,6 +68,7 @@ const Regions = ({
                 img={img}
                 imgMargin={imgMargin}
                 r={r}
+                zoomLvl={zoomLvl}
               />
             </React.Fragment>
           );
