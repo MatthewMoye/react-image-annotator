@@ -1,6 +1,14 @@
 import { memo } from "react";
+import { Image, ImageMargin } from "types/image";
+import { Region } from "types/region";
 
-const PointShape = memo(({ img, imgMargin, r }) => {
+type PointShapeProps = {
+  img: Image;
+  imgMargin: ImageMargin;
+  r: Region;
+};
+
+const PointShape = memo(({ img, imgMargin, r }: PointShapeProps) => {
   const xPos = r.points[0][0] * img.width + imgMargin.width;
   const yPos = r.points[0][1] * img.height + imgMargin.height;
   return (

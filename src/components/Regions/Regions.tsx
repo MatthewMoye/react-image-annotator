@@ -1,8 +1,20 @@
-import React from "react";
+import React, { Dispatch, MouseEvent } from "react";
 import BoxHighlightAndTransform from "./Box/BoxHighlightAndTransform";
 import BoxShape from "./Box/BoxShape";
 import PointHighlightAndTransform from "./Point/PointHighlightAndTransform";
 import PointShape from "./Point/PointShape";
+import { Image, ImageMargin } from "types/image";
+import { CustomEvents } from "components/Workspace/useEvents";
+
+type RegionsProps = {
+  activeRegionId: string;
+  activeTool: string;
+  dispatch: Dispatch<any>;
+  events: CustomEvents;
+  img: Image;
+  imgMargin: ImageMargin;
+  zoomLvl: number;
+};
 
 const regionShapes = {
   point: PointShape,
@@ -22,10 +34,10 @@ const Regions = ({
   img,
   imgMargin,
   zoomLvl,
-}) => {
-  const handleMouseDown = (e) => {
+}: RegionsProps) => {
+  const handleMouseDown = (e: MouseEvent<SVGElement>) => {
     if (e.button === 0 && activeTool.includes("create")) {
-      events.onMouseDown(e, activeTool.slice(6).toUpperCase(), "create");
+      events.onMouseDown(e, "CREATE_NEW_" + activeTool.slice(6).toUpperCase());
     }
   };
 
@@ -43,7 +55,7 @@ const Regions = ({
         onMouseDown={handleMouseDown}
       >
         {img.regions.map((r) => {
-          const Shape = regionShapes[r.type];
+          const Shape = regionShapes[r.type as keyof typeof regionShapes];
           return (
             <Shape
               key={`region-${r.id}`}
@@ -57,7 +69,10 @@ const Regions = ({
       {img.width &&
         img.height &&
         img.regions.map((r) => {
-          const HighlightAndTransform = regionHighlightAndTransform[r.type];
+          const HighlightAndTransform =
+            regionHighlightAndTransform[
+              r.type as keyof typeof regionHighlightAndTransform
+            ];
           return (
             <React.Fragment key={`region-select-${r.id}`}>
               <HighlightAndTransform

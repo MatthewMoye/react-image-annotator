@@ -1,4 +1,18 @@
+import { Dispatch, MouseEvent } from "react";
+import { Region } from "types/region";
+import { CustomEvents } from "components/Workspace/useEvents";
+import { Image, ImageMargin } from "types/image";
 import styles from "./Box.module.css";
+
+type BoxHighlightAndTransformProps = {
+  activeRegionId: string;
+  dispatch: Dispatch<any>;
+  events: CustomEvents;
+  img: Image;
+  imgMargin: ImageMargin;
+  r: Region;
+  zoomLvl: number;
+};
 
 const BoxHighlightAndTransform = ({
   activeRegionId,
@@ -8,14 +22,14 @@ const BoxHighlightAndTransform = ({
   imgMargin,
   r,
   zoomLvl,
-}) => {
+}: BoxHighlightAndTransformProps) => {
   const pointList = r.points.map((p) => [
     p[0] * img.width + imgMargin.width,
     p[1] * img.height + imgMargin.height,
   ]);
   const isActive = activeRegionId === r.id;
 
-  const handleRegionSelect = (e) => {
+  const handleRegionSelect = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.button === 0) {
       e.stopPropagation();
@@ -25,7 +39,7 @@ const BoxHighlightAndTransform = ({
     }
   };
 
-  const startTransform = (e, point) => {
+  const startTransform = (e: MouseEvent<HTMLDivElement>, point: number) => {
     e.preventDefault();
     if (e.button === 0) {
       e.stopPropagation();
@@ -35,7 +49,7 @@ const BoxHighlightAndTransform = ({
     }
   };
 
-  const stopTransform = (e) => {
+  const stopTransform = (e: MouseEvent<HTMLDivElement>) => {
     if (e.button === 0) {
       e.stopPropagation();
       if (isActive) {
@@ -44,10 +58,13 @@ const BoxHighlightAndTransform = ({
     }
   };
 
-  const lineDistance = (p1, p2) =>
+  const lineDistance = (p1: number[], p2: number[]) =>
     Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2));
 
-  const lineMidpoint2D = (p1, p2) => [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2];
+  const lineMidpoint2D = (p1: number[], p2: number[]) => [
+    (p1[0] + p2[0]) / 2,
+    (p1[1] + p2[1]) / 2,
+  ];
 
   const translatePoints = [
     ...pointList,
@@ -86,7 +103,7 @@ const BoxHighlightAndTransform = ({
               WebkitTransform: `scale(${1 / Math.min(zoomLvl / 1.5, 1)})`,
             }}
             onMouseDown={(e) => startTransform(e, idx)}
-            onMouseUp={(e) => stopTransform(e, idx)}
+            onMouseUp={(e) => stopTransform(e)}
           />
         ))}
     </>

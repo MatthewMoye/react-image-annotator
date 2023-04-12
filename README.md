@@ -1,6 +1,6 @@
 # React Image Annotator
 
-An easy starting point for developers looking to create image annotation software. Other projects exist for image annotation, but they may not provide the same ease that this project will for developers creating annotation software.
+For developers seeking to develop image annotation software, this serves as an easy starting point. Although other open source annotation software of comparable nature are available, none of them are as simple to customize or integrate into your project.
 
 An annotation project, for React, that I used as a reference is:
 - [React Image Annotate](https://github.com/UniversalDataTool/react-image-annotate)

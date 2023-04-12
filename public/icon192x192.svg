@@ -1,0 +1,20 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="96" cy="96" r="96" fill="black" />
+    <path
+        d="M156 73.5C156 85.9264 145.926 96 133.5 96C121.074 96 111 85.9264 111 73.5C111 61.0736 121.074 51 133.5 51C145.926 51 156 61.0736 156 73.5Z"
+        fill="white" />
+    <path
+        d="M81 73.5C81 85.9264 70.9264 96 58.5 96C46.0736 96 36 85.9264 36 73.5C36 61.0736 46.0736 51 58.5 51C70.9264 51 81 61.0736 81 73.5Z"
+        fill="white" />
+    <rect x="36" y="132" width="120" height="15" rx="7.5" fill="white" />
+    <line x1="115.5" y1="132" x2="115.5" y2="147" stroke="black" stroke-width="3" />
+    <line x1="117.5" y1="132" x2="117.5" y2="147" stroke="black" />
+    <line x1="136.5" y1="132" x2="136.5" y2="147" stroke="black" stroke-width="3" />
+    <line x1="138.5" y1="132" x2="138.5" y2="147" stroke="black" />
+    <line x1="73.5" y1="132" x2="73.5" y2="147" stroke="black" stroke-width="3" />
+    <line x1="75.5" y1="132" x2="75.5" y2="147" stroke="black" />
+    <line x1="52.5" y1="132" x2="52.5" y2="147" stroke="black" stroke-width="3" />
+    <line x1="54.5" y1="132" x2="54.5" y2="147" stroke="black" />
+    <line x1="94.5" y1="132" x2="94.5" y2="147" stroke="black" stroke-width="3" />
+    <line x1="96.5" y1="132" x2="96.5" y2="147" stroke="black" />
+</svg>

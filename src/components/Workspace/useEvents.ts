@@ -1,22 +1,44 @@
-import { useRef } from "react";
+import {
+  Dispatch,
+  MouseEvent,
+  WheelEvent,
+  RefObject,
+  MutableRefObject,
+  useRef,
+} from "react";
+import { Coord } from "types/coord";
+import { Mode } from "types/mode";
+
+export type CustomEvents = {
+  onMouseMove: (e: MouseEvent<HTMLElement>) => void;
+  onMouseDown: (
+    e: MouseEvent<HTMLElement | SVGElement>,
+    operation?: string
+  ) => void;
+  onMouseUp: (e: MouseEvent<HTMLElement>, operation?: string) => void;
+  onMouseLeave: (e: MouseEvent<HTMLElement>) => void;
+  onWheel: (e: WheelEvent<HTMLElement>) => void;
+  onContextMenu: (e: MouseEvent<HTMLElement>) => void;
+};
 
 const useEvents = (
-  activeImageAngle,
-  activeImageRef,
-  activeRegionType,
-  activeTool,
-  dispatch,
-  imageContainerRef,
-  isMovingImg,
-  isPanning,
-  mode,
-  zoomLvl
+  activeImageAngle: number,
+  activeImageRef: RefObject<HTMLDivElement>,
+  activeRegionType: string,
+  activeTool: string,
+  dispatch: Dispatch<any>,
+  imageContainerRef: RefObject<HTMLDivElement>,
+  isMovingImg: boolean,
+  isPanning: boolean,
+  mode: Mode,
+  zoomLvl: number
 ) => {
   const mousePosRef = useRef({ x: 0, y: 0 });
   const panStartRef = useRef({ x: 0, y: 0 });
   const mvImageStartRef = useRef({ x: 0, y: 0 });
 
-  const getMousePosition = (e) => {
+  const getMousePosition = (e: MouseEvent<HTMLElement | SVGElement>) => {
+    if (!activeImageRef.current) return { x: 0, y: 0 };
     const { clientWidth, clientHeight } = activeImageRef.current;
     const { top, bottom, left, right } =
       activeImageRef.current.getBoundingClientRect();
@@ -35,12 +57,15 @@ const useEvents = (
     };
   };
 
-  const updateRefPosition = (ref, mousePos, startPos) => {
-    const transform =
-      ref.current.style.transform.match(/[-+]?[0-9]*\.?[0-9]+/g);
-    const [x, y] = transform
-      ? [Number(transform[0]), transform.length > 1 ? Number(transform[1]) : 0]
-      : [0, 0];
+  const updateRefPosition = (
+    ref: RefObject<HTMLDivElement>,
+    mousePos: Coord,
+    startPos: MutableRefObject<Coord>
+  ) => {
+    if (!ref.current) return;
+    const { m41: x, m42: y } = new DOMMatrixReadOnly(
+      ref.current.style.transform
+    );
     const updateX = (mousePos.x - startPos.current.x) / zoomLvl;
     const updateY = (mousePos.y - startPos.current.y) / zoomLvl;
     ref.current.style.transform = `translate(${x + updateX}px, ${
@@ -48,7 +73,7 @@ const useEvents = (
     }px)`;
   };
 
-  const events = {
+  const events: CustomEvents = {
     onMouseMove: (e) => {
       e.stopPropagation();
       mousePosRef.current = getMousePosition(e);
@@ -77,7 +102,7 @@ const useEvents = (
         });
       }
     },
-    onMouseDown: (e, type, operation) => {
+    onMouseDown: (e, operation) => {
       e.stopPropagation();
       mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
@@ -89,9 +114,18 @@ const useEvents = (
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
         return;
       }
-      if ((activeRegionType && operation) || type) {
+      if (operation?.includes("CREATE_NEW")) {
+        const regionType = operation.replace("CREATE_NEW_", "");
         dispatch({
-          type: type ? type : activeRegionType.toUpperCase(),
+          type: regionType,
+          operation: operation,
+          event: "MOUSE_DOWN",
+          x: mousePosRef.current.x,
+          y: mousePosRef.current.y,
+        });
+      } else if (activeRegionType && operation) {
+        dispatch({
+          type: activeRegionType.toUpperCase(),
           operation: operation,
           event: "MOUSE_DOWN",
           x: mousePosRef.current.x,
@@ -142,7 +176,7 @@ const useEvents = (
     },
   };
 
-  return [mousePosRef, events];
+  return { mousePosRef, events };
 };
 
 export default useEvents;

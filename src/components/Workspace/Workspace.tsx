@@ -1,7 +1,25 @@
-import { useEffect, useRef } from "react";
+import { Dispatch, MouseEvent, useEffect, useRef } from "react";
 import Regions from "../Regions/Regions";
 import useEvents from "./useEvents";
+import { Image } from "types/image";
+import { Mode } from "types/mode";
 import styles from "./Workspace.module.css";
+import { Region } from "types/region";
+
+type WorkspaceProps = {
+  activeImageIdx: number;
+  activeRegionId: string;
+  activeRegionType: string;
+  activeTool: string;
+  dispatch: Dispatch<any>;
+  images: Image[];
+  isPanning: boolean;
+  isMovingImg: boolean;
+  mode: Mode;
+  totalImageSize: { width: number; height: number };
+  workspaceLoaded: boolean;
+  zoomLvl: number;
+};
 
 const Workspace = ({
   activeImageIdx,
@@ -16,13 +34,13 @@ const Workspace = ({
   totalImageSize,
   workspaceLoaded,
   zoomLvl,
-}) => {
-  const activeImageAngle = images[activeImageIdx]?.angle;
-  const activeImageRef = useRef();
-  const imageContainerRef = useRef();
+}: WorkspaceProps) => {
+  const activeImageAngle = images[activeImageIdx].angle;
+  const activeImageRef = useRef<HTMLDivElement>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null); 
 
   // eslint-disable-next-line
-  const [mousePositionRef, events] = useEvents(
+  const { mousePosRef, events } = useEvents(
     activeImageAngle,
     activeImageRef,
     activeRegionType,
@@ -35,18 +53,23 @@ const Workspace = ({
     zoomLvl
   );
 
-  const onImgLoad = (e, regions, imgIdx) => {
+  const onImgLoad = (
+    e: React.SyntheticEvent<HTMLImageElement>,
+    regions: Region[],
+    imgIdx: number
+  ) => {
+    const img = e.target as HTMLImageElement;
     dispatch({
       type: "IMAGE",
       event: "LOAD",
       idx: imgIdx,
-      w: e.target.naturalWidth,
-      h: e.target.naturalHeight,
+      w: img.naturalWidth,
+      h: img.naturalHeight,
       regions: regions,
     });
   };
 
-  const handleImgMouseDown = (e, idx) => {
+  const handleImgMouseDown = (e: MouseEvent<HTMLDivElement>, idx: number) => {
     e.preventDefault();
     if (e.button !== 0) return;
     if (activeTool === "selectImage") {
@@ -55,7 +78,7 @@ const Workspace = ({
       dispatch({ type: "IMAGE", event: "ROTATE" });
     } else if (activeTool === "moveImage" && activeImageIdx === idx) {
       e.stopPropagation();
-      events.onMouseDown(e, null, "MOVE_IMAGE");
+      events.onMouseDown(e, "MOVE_IMAGE");
     }
   };
 
@@ -70,7 +93,15 @@ const Workspace = ({
   }, [dispatch, totalImageSize]);
 
   return (
-    <div className={styles.workspaceContainer} {...events}>
+    <div
+      className={styles.workspaceContainer}
+      onMouseMove={events.onMouseMove}
+      onMouseDown={events.onMouseDown}
+      onMouseUp={events.onMouseUp}
+      onMouseLeave={events.onMouseLeave}
+      onWheel={events.onWheel}
+      onContextMenu={events.onContextMenu}
+    >
       <div
         className={styles.imgListContainer}
         style={{
@@ -105,7 +136,7 @@ const Workspace = ({
                     width: `${img.width}px`,
                     height: `${img.height}px`,
                   }}
-                  ref={isActiveImg ? activeImageRef : null}
+                  ref={isActiveImg ? activeImageRef : undefined}
                 >
                   <div
                     key={`img-area-${img.id}`}
@@ -133,7 +164,6 @@ const Workspace = ({
                     {workspaceLoaded && img.regions && (
                       <Regions
                         activeRegionId={activeRegionId}
-                        activeRegionType={activeRegionType}
                         activeTool={activeTool}
                         dispatch={dispatch}
                         events={events}

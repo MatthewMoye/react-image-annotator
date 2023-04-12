@@ -1,10 +1,15 @@
 import { useReducer } from "react";
 import makeImmutable from "seamless-immutable";
+import { UploadedImage } from "types/image";
 import Toolbar from "../Toolbar/Toolbar";
 import Workspace from "../Workspace/Workspace";
 import reducer from "./reducers/reducer";
 
-const Annotator = ({ images }) => {
+type AnnotatorProps = {
+  images: UploadedImage[];
+};
+
+const Annotator = ({ images }: AnnotatorProps) => {
   const [state, dispatch] = useReducer(
     reducer,
     makeImmutable({
@@ -12,7 +17,13 @@ const Annotator = ({ images }) => {
       activeRegionId: null,
       activeRegionType: null,
       activeTool: "select",
-      images: images,
+      images: images.map((img) => ({
+        ...img,
+        angle: 0,
+        width: 0,
+        height: 0,
+        regions: [],
+      })),
       isPanning: false,
       isMovingImg: false,
       mode: {},
