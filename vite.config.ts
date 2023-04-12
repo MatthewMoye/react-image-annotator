@@ -8,4 +8,3 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths(), svgLoader()],
   server: { port: 3000 },
 });
-  

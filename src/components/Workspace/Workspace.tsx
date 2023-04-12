@@ -37,7 +37,7 @@ const Workspace = ({
 }: WorkspaceProps) => {
   const activeImageAngle = images[activeImageIdx].angle;
   const activeImageRef = useRef<HTMLDivElement>(null);
-  const imageContainerRef = useRef<HTMLDivElement>(null); 
+  const imageContainerRef = useRef<HTMLDivElement>(null);
 
   // eslint-disable-next-line
   const { mousePosRef, events } = useEvents(

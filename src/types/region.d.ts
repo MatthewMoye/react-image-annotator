@@ -3,4 +3,4 @@ export type Region = {
   type: string;
   angle: number;
   points: number[][];
-}
+};
