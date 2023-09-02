@@ -5,36 +5,36 @@ import { Image } from "types/image";
 import { Mode } from "types/mode";
 import styles from "./Workspace.module.css";
 import { Region } from "types/region";
+import { useAppDispatch, useAppSelector } from "reduxHooks";
+import {
+  setWorkspaceLoaded,
+  setZoom,
+} from "features/workspaceSlice/workspaceSlice";
 
 type WorkspaceProps = {
   activeImageIdx: number;
   activeRegionId: string;
   activeRegionType: string;
-  activeTool: string;
   dispatch: Dispatch<any>;
   images: Image[];
-  isPanning: boolean;
-  isMovingImg: boolean;
   mode: Mode;
   totalImageSize: { width: number; height: number };
-  workspaceLoaded: boolean;
-  zoomLvl: number;
 };
 
 const Workspace = ({
   activeImageIdx,
   activeRegionId,
   activeRegionType,
-  activeTool,
   dispatch,
   images,
-  isPanning,
-  isMovingImg,
   mode,
   totalImageSize,
-  workspaceLoaded,
-  zoomLvl,
 }: WorkspaceProps) => {
+  const { activeTool, workspaceLoaded, zoomLvl } = useAppSelector(
+    (state) => state.workspace
+  );
+  const reduxDispatch = useAppDispatch();
+
   const activeImageAngle = images[activeImageIdx].angle;
   const activeImageRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
@@ -44,13 +44,9 @@ const Workspace = ({
     activeImageAngle,
     activeImageRef,
     activeRegionType,
-    activeTool,
     dispatch,
     imageContainerRef,
-    isMovingImg,
-    isPanning,
-    mode,
-    zoomLvl
+    mode
   );
 
   const onImgLoad = (
@@ -83,14 +79,13 @@ const Workspace = ({
   };
 
   useEffect(() => {
-    dispatch({
-      type: "DEFAULT_ZOOM",
-      zoomLvl: Math.min(
-        window.innerWidth / totalImageSize.width,
-        window.innerHeight / totalImageSize.height
-      ),
-    });
-  }, [dispatch, totalImageSize]);
+    const newZoom = Math.min(
+      window.innerWidth / totalImageSize.width,
+      window.innerHeight / totalImageSize.height
+    );
+    reduxDispatch(setZoom(newZoom));
+    reduxDispatch(setWorkspaceLoaded(true));
+  }, [reduxDispatch, totalImageSize]);
 
   return (
     <div
@@ -164,12 +159,10 @@ const Workspace = ({
                     {workspaceLoaded && img.regions && (
                       <Regions
                         activeRegionId={activeRegionId}
-                        activeTool={activeTool}
                         dispatch={dispatch}
                         events={events}
                         img={img}
                         imgMargin={imgMargin}
-                        zoomLvl={zoomLvl}
                       />
                     )}
                   </div>

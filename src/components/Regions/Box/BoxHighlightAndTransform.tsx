@@ -1,4 +1,5 @@
 import { Dispatch, MouseEvent } from "react";
+import { useAppSelector } from "reduxHooks";
 import { Region } from "types/region";
 import { CustomEvents } from "components/Workspace/useEvents";
 import { Image, ImageMargin } from "types/image";
@@ -11,7 +12,6 @@ type BoxHighlightAndTransformProps = {
   img: Image;
   imgMargin: ImageMargin;
   r: Region;
-  zoomLvl: number;
 };
 
 const BoxHighlightAndTransform = ({
@@ -21,8 +21,9 @@ const BoxHighlightAndTransform = ({
   img,
   imgMargin,
   r,
-  zoomLvl,
 }: BoxHighlightAndTransformProps) => {
+  const { zoomLvl } = useAppSelector((state) => state.workspace);
+
   const pointList = r.points.map((p) => [
     p[0] * img.width + imgMargin.width,
     p[1] * img.height + imgMargin.height,

@@ -1,4 +1,5 @@
 import React, { Dispatch, MouseEvent } from "react";
+import { useAppSelector } from "reduxHooks";
 import BoxHighlightAndTransform from "./Box/BoxHighlightAndTransform";
 import BoxShape from "./Box/BoxShape";
 import PointHighlightAndTransform from "./Point/PointHighlightAndTransform";
@@ -8,12 +9,10 @@ import { CustomEvents } from "components/Workspace/useEvents";
 
 type RegionsProps = {
   activeRegionId: string;
-  activeTool: string;
   dispatch: Dispatch<any>;
   events: CustomEvents;
   img: Image;
   imgMargin: ImageMargin;
-  zoomLvl: number;
 };
 
 const regionShapes = {
@@ -28,13 +27,12 @@ const regionHighlightAndTransform = {
 
 const Regions = ({
   activeRegionId,
-  activeTool,
   dispatch,
   events,
   img,
   imgMargin,
-  zoomLvl,
 }: RegionsProps) => {
+  const { activeTool } = useAppSelector((state) => state.workspace);
   const handleMouseDown = (e: MouseEvent<SVGElement>) => {
     if (e.button === 0 && activeTool.includes("create")) {
       events.onMouseDown(e, "CREATE_NEW_" + activeTool.slice(6).toUpperCase());
@@ -83,7 +81,6 @@ const Regions = ({
                 img={img}
                 imgMargin={imgMargin}
                 r={r}
-                zoomLvl={zoomLvl}
               />
             </React.Fragment>
           );
