@@ -9,7 +9,9 @@ import Image from "components/Image/Image";
 const Workspace = () => {
   const dispatch = useAppDispatch();
   const { zoomLvl } = useAppSelector((state) => state.tool);
-  const { images, totalImageSize } = useAppSelector((state) => state.image);
+  const { activeImageIdx, images, totalImageSize } = useAppSelector(
+    (state) => state.image
+  );
 
   const activeImageRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
@@ -58,7 +60,12 @@ const Workspace = () => {
                 imgIdx={imgIdx}
                 imgMargin={imgMargin}
               >
-                <Regions events={events} img={img} imgMargin={imgMargin} />
+                <Regions
+                  events={events}
+                  img={img}
+                  imgIsActive={activeImageIdx === imgIdx}
+                  imgMargin={imgMargin}
+                />
               </Image>
             );
           })}

@@ -10,6 +10,7 @@ import { useAppSelector } from "reduxHooks";
 type RegionsProps = {
   events: CustomEvents;
   img: Image;
+  imgIsActive: boolean;
   imgMargin: ImageMargin;
 };
 
@@ -23,7 +24,7 @@ const regionHighlightAndTransform = {
   box: BoxHighlightAndTransform,
 };
 
-const Regions = ({ events, img, imgMargin }: RegionsProps) => {
+const Regions = ({ events, img, imgIsActive, imgMargin }: RegionsProps) => {
   const { regions } = useAppSelector((state) => state.region);
 
   const imgRegions = regions.filter((r) => r.imageId === img.id);
@@ -49,22 +50,23 @@ const Regions = ({ events, img, imgMargin }: RegionsProps) => {
           );
         })}
       </svg>
-      {imgRegions.map((r) => {
-        const HighlightAndTransform =
-          regionHighlightAndTransform[
-            r.type as keyof typeof regionHighlightAndTransform
-          ];
-        return (
-          <React.Fragment key={`region-events-${r.id}`}>
-            <HighlightAndTransform
-              events={events}
-              img={img}
-              imgMargin={imgMargin}
-              r={r}
-            />
-          </React.Fragment>
-        );
-      })}
+      {imgIsActive &&
+        imgRegions.map((r) => {
+          const HighlightAndTransform =
+            regionHighlightAndTransform[
+              r.type as keyof typeof regionHighlightAndTransform
+            ];
+          return (
+            <React.Fragment key={`region-events-${r.id}`}>
+              <HighlightAndTransform
+                events={events}
+                img={img}
+                imgMargin={imgMargin}
+                r={r}
+              />
+            </React.Fragment>
+          );
+        })}
     </div>
   );
 };
