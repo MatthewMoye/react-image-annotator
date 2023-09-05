@@ -8,6 +8,7 @@ type PointShapeProps = {
   r: Region;
 };
 
+// eslint-disable-next-line react/display-name
 const PointShape = memo(({ img, imgMargin, r }: PointShapeProps) => {
   const xPos = r.points[0][0] * img.width + imgMargin.width;
   const yPos = r.points[0][1] * img.height + imgMargin.height;

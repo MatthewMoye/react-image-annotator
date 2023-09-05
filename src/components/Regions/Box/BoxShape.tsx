@@ -8,6 +8,7 @@ type BoxShapeProps = {
   r: Region;
 };
 
+// eslint-disable-next-line react/display-name
 const BoxShape = memo(({ img, imgMargin, r }: BoxShapeProps) => {
   const pointList = r.points.map((p) => [
     p[0] * img.width + imgMargin.width,

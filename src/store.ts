@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import workspaceSlice from "features/workspaceSlice/workspaceSlice";
+import imageSlice from "features/imageSlice/imageSlice";
+import regionSlice from "features/regionSlice/regionSlice";
+import toolSlice from "features/toolSlice/toolSlice";
 
 export const store = configureStore({
   reducer: {
-    workspace: workspaceSlice,
+    image: imageSlice,
+    region: regionSlice,
+    tool: toolSlice,
   },
 });
 

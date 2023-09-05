@@ -1,28 +1,27 @@
-import { Dispatch, MouseEvent } from "react";
-import { useAppSelector } from "reduxHooks";
+import { MouseEvent } from "react";
+import { useAppDispatch, useAppSelector } from "reduxHooks";
 import { Region } from "types/region";
-import { CustomEvents } from "components/Workspace/useEvents";
 import { Image, ImageMargin } from "types/image";
 import styles from "./Box.module.css";
+import {
+  selectRegion,
+  startBoxTransform,
+} from "features/regionSlice/regionSlice";
 
 type BoxHighlightAndTransformProps = {
-  activeRegionId: string;
-  dispatch: Dispatch<any>;
-  events: CustomEvents;
   img: Image;
   imgMargin: ImageMargin;
   r: Region;
 };
 
 const BoxHighlightAndTransform = ({
-  activeRegionId,
-  dispatch,
-  events,
   img,
   imgMargin,
   r,
 }: BoxHighlightAndTransformProps) => {
-  const { zoomLvl } = useAppSelector((state) => state.workspace);
+  const dispatch = useAppDispatch();
+  const { zoomLvl } = useAppSelector((state) => state.tool);
+  const { activeRegionId } = useAppSelector((state) => state.region);
 
   const pointList = r.points.map((p) => [
     p[0] * img.width + imgMargin.width,
@@ -35,7 +34,7 @@ const BoxHighlightAndTransform = ({
     if (e.button === 0) {
       e.stopPropagation();
       if (!isActive) {
-        dispatch({ type: "SELECT_REGION", regionId: r.id, regionType: r.type });
+        dispatch(selectRegion(r.id, r.type));
       }
     }
   };
@@ -45,16 +44,7 @@ const BoxHighlightAndTransform = ({
     if (e.button === 0) {
       e.stopPropagation();
       if (isActive) {
-        dispatch({ type: "BOX", event: "START_TRANSFORM", point: point });
-      }
-    }
-  };
-
-  const stopTransform = (e: MouseEvent<HTMLDivElement>) => {
-    if (e.button === 0) {
-      e.stopPropagation();
-      if (isActive) {
-        events.onMouseUp(e, "STOP_TRANSFORM");
+        dispatch(startBoxTransform(point));
       }
     }
   };
@@ -104,7 +94,6 @@ const BoxHighlightAndTransform = ({
               WebkitTransform: `scale(${1 / Math.min(zoomLvl / 1.5, 1)})`,
             }}
             onMouseDown={(e) => startTransform(e, idx)}
-            onMouseUp={(e) => stopTransform(e)}
           />
         ))}
     </>

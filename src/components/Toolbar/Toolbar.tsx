@@ -10,7 +10,8 @@ import {
 } from "@mui/icons-material";
 import { SvgIconProps } from "@mui/material";
 import styles from "./Toolbar.module.css";
-import { setTool } from "features/workspaceSlice/workspaceSlice";
+import { setTool } from "features/toolSlice/toolSlice";
+import { rotateImage } from "features/imageSlice/imageSlice";
 
 export const toolIconList = {
   select: (cls: SvgIconProps) => (
@@ -36,12 +37,14 @@ export const toolIconList = {
 
 const Toolbar = () => {
   const dispatch = useAppDispatch();
-  const { activeTool } = useAppSelector((state) => state.workspace);
+  const { activeTool } = useAppSelector((state) => state.tool);
 
   const isActiveTool = (toolName: string) =>
     `toolIcon${activeTool === toolName ? "Active" : ""}`;
-  const updateTool = (tool: string) =>
-    dispatch(setTool(tool as keyof typeof toolIconList));
+  const updateTool = (tool: string) => {
+    if (tool === "rotate") dispatch(rotateImage());
+    else dispatch(setTool(tool as keyof typeof toolIconList));
+  };
 
   return (
     <div className={styles.container} onContextMenu={(e) => e.preventDefault()}>

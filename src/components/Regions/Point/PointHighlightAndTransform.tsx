@@ -1,12 +1,12 @@
-import { Dispatch, MouseEvent } from "react";
+import { MouseEvent } from "react";
 import { Region } from "types/region";
 import styles from "./Point.module.css";
 import { Image, ImageMargin } from "types/image";
 import { CustomEvents } from "components/Workspace/useEvents";
+import { useAppDispatch, useAppSelector } from "reduxHooks";
+import { selectRegion } from "features/regionSlice/regionSlice";
 
 type PointHighlightAndTransformProps = {
-  activeRegionId: string;
-  dispatch: Dispatch<any>;
   events: CustomEvents;
   img: Image;
   imgMargin: ImageMargin;
@@ -14,13 +14,14 @@ type PointHighlightAndTransformProps = {
 };
 
 const PointHighlightAndTransform = ({
-  activeRegionId,
-  dispatch,
   events,
   img,
   imgMargin,
   r,
 }: PointHighlightAndTransformProps) => {
+  const dispatch = useAppDispatch();
+  const { activeRegionId } = useAppSelector((state) => state.region);
+
   const xPos = r.points[0][0] * img.width + imgMargin.width;
   const yPos = r.points[0][1] * img.height + imgMargin.height;
   const isActive = activeRegionId === r.id;
@@ -30,18 +31,9 @@ const PointHighlightAndTransform = ({
     if (e.button === 0) {
       e.stopPropagation();
       if (!isActive) {
-        dispatch({ type: "SELECT_REGION", regionId: r.id, regionType: r.type });
+        dispatch(selectRegion(r.id, r.type));
       } else {
         events.onMouseDown(e, "START_MOVE");
-      }
-    }
-  };
-
-  const stopTransform = (e: MouseEvent<HTMLDivElement>) => {
-    if (e.button === 0) {
-      e.stopPropagation();
-      if (isActive) {
-        events.onMouseUp(e, "STOP_MOVE");
       }
     }
   };
@@ -56,7 +48,6 @@ const PointHighlightAndTransform = ({
         height: "27px",
       }}
       onMouseDown={handleRegionSelect}
-      onMouseUp={stopTransform}
     />
   );
 };

@@ -1,5 +1,3 @@
-import { Region } from "./region";
-
 export type Image = {
   id: string;
   alt: string;
@@ -7,7 +5,6 @@ export type Image = {
   width: number;
   height: number;
   angle: number;
-  regions: Region[];
 };
 
 export type UploadedImage = {

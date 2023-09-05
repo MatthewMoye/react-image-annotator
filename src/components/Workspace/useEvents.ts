@@ -1,10 +1,4 @@
 import {
-  setIsMovingImg,
-  setIsPanning,
-  zoom,
-} from "features/workspaceSlice/workspaceSlice";
-import {
-  Dispatch,
   MouseEvent,
   WheelEvent,
   RefObject,
@@ -12,8 +6,24 @@ import {
   useRef,
 } from "react";
 import { useAppDispatch, useAppSelector } from "reduxHooks";
+import {
+  setIsMovingImg,
+  setIsPanning,
+  zoom,
+} from "features/toolSlice/toolSlice";
+import {
+  createPoint,
+  mouseMoveBoxTransform,
+  mouseMoveCreateBox,
+  movePoint,
+  selectRegion,
+  startCreateBox,
+  startPointMove,
+  stopBoxTransform,
+  stopCreateBox,
+  stopPointMove,
+} from "features/regionSlice/regionSlice";
 import { Coord } from "types/coord";
-import { Mode } from "types/mode";
 
 export type CustomEvents = {
   onMouseMove: (e: MouseEvent<HTMLElement>) => void;
@@ -28,17 +38,17 @@ export type CustomEvents = {
 };
 
 const useEvents = (
-  activeImageAngle: number,
   activeImageRef: RefObject<HTMLDivElement>,
-  activeRegionType: string,
-  dispatch: Dispatch<any>,
-  imageContainerRef: RefObject<HTMLDivElement>,
-  mode: Mode
+  imageContainerRef: RefObject<HTMLDivElement>
 ) => {
-  const reduxDispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const { activeTool, isMovingImg, isPanning, zoomLvl } = useAppSelector(
-    (state) => state.workspace
+    (state) => state.tool
   );
+  const { activeImageIdx, images } = useAppSelector((state) => state.image);
+  const { activeRegionType, mode } = useAppSelector((state) => state.region);
+  const activeImageAngle = images[activeImageIdx]?.angle;
+  const activeImageId = images[activeImageIdx]?.id;
 
   const mousePosRef = useRef({ x: 0, y: 0 });
   const panStartRef = useRef({ x: 0, y: 0 });
@@ -100,80 +110,85 @@ const useEvents = (
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
         return;
       }
-      if (activeRegionType) {
-        dispatch({
-          type: activeRegionType.toUpperCase(),
-          event: "MOUSE_MOVE",
-          x: mousePosRef.current.x,
-          y: mousePosRef.current.y,
-        });
+      const { x, y } = mousePosRef.current;
+      switch (activeRegionType) {
+        case "POINT":
+          if (mode.operation === "MOVE_POINT") dispatch(movePoint(x, y));
+          break;
+        case "BOX":
+          if (mode.operation === "CREATE_BOX")
+            dispatch(mouseMoveCreateBox(x, y));
+          else if (mode.operation === "BOX_TRANSFORM")
+            dispatch(mouseMoveBoxTransform(x, y));
+          break;
       }
     },
-    onMouseDown: (e, operation) => {
+    onMouseDown: (e, actionType) => {
       e.stopPropagation();
       mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
-        reduxDispatch(setIsPanning(true));
+        dispatch(setIsPanning(true));
         panStartRef.current = { x: e.pageX, y: e.pageY };
         return;
-      } else if (operation === "MOVE_IMAGE" && activeTool === "moveImage") {
-        reduxDispatch(setIsMovingImg(true));
+      } else if (actionType === "MOVE_IMAGE" && activeTool === "moveImage") {
+        dispatch(setIsMovingImg(true));
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
         return;
       }
-      if (operation?.includes("CREATE_NEW")) {
-        const regionType = operation.replace("CREATE_NEW_", "");
-        dispatch({
-          type: regionType,
-          operation: operation,
-          event: "MOUSE_DOWN",
-          x: mousePosRef.current.x,
-          y: mousePosRef.current.y,
-        });
-      } else if (activeRegionType && operation) {
-        dispatch({
-          type: activeRegionType.toUpperCase(),
-          operation: operation,
-          event: "MOUSE_DOWN",
-          x: mousePosRef.current.x,
-          y: mousePosRef.current.y,
-        });
-      } else if (e.button === 0 && mode?.mode === undefined) {
-        dispatch({
-          type: "UNSELECT",
-          event: "MOUSE_DOWN",
-        });
+      const isCreateTool = activeTool.includes("create");
+      if (isCreateTool && !actionType && e.button === 0) {
+        const regionType = activeTool.replace("create", "").toUpperCase();
+        const { x, y } = mousePosRef.current;
+        switch (regionType) {
+          case "POINT":
+            dispatch(createPoint(x, y, activeImageId));
+            break;
+          case "BOX":
+            dispatch(startCreateBox(x, y, activeImageId));
+            break;
+        }
+      } else if (activeRegionType && actionType) {
+        switch (activeRegionType) {
+          case "POINT":
+            if (actionType === "START_MOVE") dispatch(startPointMove());
+            break;
+          case "BOX":
+            break;
+        }
+      } else if (e.button === 0 && !mode.operation) {
+        dispatch(selectRegion("", ""));
       }
     },
-    onMouseUp: (e, operation) => {
+    onMouseUp: (e) => {
       e.stopPropagation();
       mousePosRef.current = getMousePosition(e);
       if (e.button === 2 || activeTool === "pan") {
-        reduxDispatch(setIsPanning(false));
+        dispatch(setIsPanning(false));
         mvImageStartRef.current = { x: e.pageX, y: e.pageY };
       } else if (e.button === 0 && activeTool === "moveImage") {
-        reduxDispatch(setIsMovingImg(false));
+        dispatch(setIsMovingImg(false));
         return;
       }
-      if (activeRegionType) {
-        dispatch({
-          type: activeRegionType.toUpperCase(),
-          operation: operation,
-          event: "MOUSE_UP",
-          x: mousePosRef.current.x,
-          y: mousePosRef.current.y,
-        });
+      switch (activeRegionType) {
+        case "POINT":
+          if (mode.operation === "MOVE_POINT") dispatch(stopPointMove());
+          break;
+        case "BOX":
+          if (mode.operation === "CREATE_BOX") dispatch(stopCreateBox());
+          else if (mode.operation === "BOX_TRANSFORM")
+            dispatch(stopBoxTransform());
+          break;
       }
     },
     onMouseLeave: (e) => {
       mousePosRef.current = getMousePosition(e);
-      reduxDispatch(setIsPanning(false));
-      reduxDispatch(setIsMovingImg(false));
+      dispatch(setIsPanning(false));
+      dispatch(setIsMovingImg(false));
     },
     onWheel: (e) => {
       e.stopPropagation();
       const direction = e.deltaY < 0 ? 1 : e.deltaY > 0 ? -1 : 0;
-      reduxDispatch(zoom(direction));
+      dispatch(zoom(direction));
     },
     onContextMenu: (e) => {
       e.preventDefault();

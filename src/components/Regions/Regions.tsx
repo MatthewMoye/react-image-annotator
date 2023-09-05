@@ -1,15 +1,13 @@
-import React, { Dispatch, MouseEvent } from "react";
-import { useAppSelector } from "reduxHooks";
+import React from "react";
 import BoxHighlightAndTransform from "./Box/BoxHighlightAndTransform";
 import BoxShape from "./Box/BoxShape";
 import PointHighlightAndTransform from "./Point/PointHighlightAndTransform";
 import PointShape from "./Point/PointShape";
 import { Image, ImageMargin } from "types/image";
 import { CustomEvents } from "components/Workspace/useEvents";
+import { useAppSelector } from "reduxHooks";
 
 type RegionsProps = {
-  activeRegionId: string;
-  dispatch: Dispatch<any>;
   events: CustomEvents;
   img: Image;
   imgMargin: ImageMargin;
@@ -25,19 +23,10 @@ const regionHighlightAndTransform = {
   box: BoxHighlightAndTransform,
 };
 
-const Regions = ({
-  activeRegionId,
-  dispatch,
-  events,
-  img,
-  imgMargin,
-}: RegionsProps) => {
-  const { activeTool } = useAppSelector((state) => state.workspace);
-  const handleMouseDown = (e: MouseEvent<SVGElement>) => {
-    if (e.button === 0 && activeTool.includes("create")) {
-      events.onMouseDown(e, "CREATE_NEW_" + activeTool.slice(6).toUpperCase());
-    }
-  };
+const Regions = ({ events, img, imgMargin }: RegionsProps) => {
+  const { regions } = useAppSelector((state) => state.region);
+
+  const imgRegions = regions.filter((r) => r.imageId === img.id);
 
   return (
     <div
@@ -47,12 +36,8 @@ const Regions = ({
         position: "absolute",
       }}
     >
-      <svg
-        key={`annotation-list-${img.id}`}
-        style={{ width: "100%", height: "100%" }}
-        onMouseDown={handleMouseDown}
-      >
-        {img.regions.map((r) => {
+      <svg style={{ width: "100%", height: "100%" }}>
+        {imgRegions.map((r) => {
           const Shape = regionShapes[r.type as keyof typeof regionShapes];
           return (
             <Shape
@@ -64,27 +49,22 @@ const Regions = ({
           );
         })}
       </svg>
-      {img.width &&
-        img.height &&
-        img.regions.map((r) => {
-          const HighlightAndTransform =
-            regionHighlightAndTransform[
-              r.type as keyof typeof regionHighlightAndTransform
-            ];
-          return (
-            <React.Fragment key={`region-select-${r.id}`}>
-              <HighlightAndTransform
-                key={`region-highlight-transform-${r.id}`}
-                activeRegionId={activeRegionId}
-                dispatch={dispatch}
-                events={events}
-                img={img}
-                imgMargin={imgMargin}
-                r={r}
-              />
-            </React.Fragment>
-          );
-        })}
+      {imgRegions.map((r) => {
+        const HighlightAndTransform =
+          regionHighlightAndTransform[
+            r.type as keyof typeof regionHighlightAndTransform
+          ];
+        return (
+          <React.Fragment key={`region-events-${r.id}`}>
+            <HighlightAndTransform
+              events={events}
+              img={img}
+              imgMargin={imgMargin}
+              r={r}
+            />
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 };
